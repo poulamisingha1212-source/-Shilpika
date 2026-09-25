@@ -1,0 +1,15 @@
+{
+  "name": "artisan-ai-marketplace",
+  "version": "1.0.0",
+  "description": "Voice-first AI-assisted marketplace for marginalized artisans",
+  "private": true,
+  "scripts": {
+    "backend:install": "cd backend && npm install",
+    "backend:dev": "cd backend && npm run start:dev",
+    "backend:build": "cd backend && npm run build",
+    "backend:test": "cd backend && npm run test",
+    "backend:migrate": "cd backend && npm run migration:run",
+    "backend:seed": "cd backend && npm run seed",
+    "setup": "npm run backend:install"
+  }
+}

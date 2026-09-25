@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+dist/
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Environment
+.env
+.env.local
+.env.production
+gcp-credentials.json
+*.key
+*.pem
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Flutter
+mobile/.dart_tool/
+mobile/.pub-cache/
+mobile/build/
+mobile/.packages
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/pubspec.lock
+
+# Backend
+backend/dist/
+backend/coverage/
+backend/*.js.map
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.docx
+_docx_extracted/
+_docx_text.txt

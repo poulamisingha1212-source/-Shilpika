@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shilpika शिल्पिका — Voice-First, AI-Native Craft Commerce</title>
+  <meta name="description" content="Shilpika empowers rural artisans via generative AI, cultural provenance and voice-first commerce: quality-gated image enhancement, multilingual voice catalogs, three-tier fair pricing, live heritage auctions and cross-language voice negotiation.">
+  <meta name="theme-color" content="#F6F0E6">
+
+  <!-- Fonts: Fraunces (craft display serif) + Work Sans (humanist UI) + Noto Sans Devanagari (Hindi) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- ================= Top Navigation ================= -->
+  <header class="top-header">
+    <div class="brand-section">
+      <div class="brand-icon" aria-hidden="true">
+        <i class="ph-fill ph-hand-heart"></i>
+      </div>
+      <div class="brand-title">
+        <h1>Shilpika <span class="hindi-text brand-hindi">शिल्पिका</span></h1>
+        <p>Voice-first, AI-native craft commerce · cultural provenance</p>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <nav class="role-switcher" aria-label="Switch workspace">
+        <button class="role-btn active" data-role="artisan" type="button">
+          <i class="ph ph-paint-brush" aria-hidden="true"></i> <span>Artisan</span>
+        </button>
+        <button class="role-btn" data-role="buyer" type="button">
+          <i class="ph ph-storefront" aria-hidden="true"></i> <span>Marketplace</span>
+        </button>
+        <button class="role-btn" data-role="auction" type="button">
+          <i class="ph ph-gavel" aria-hidden="true"></i> <span>Nilaam</span>
+        </button>
+        <button class="role-btn" data-role="admin" type="button">
+          <i class="ph ph-chart-line-up" aria-hidden="true"></i> <span>Admin</span>
+        </button>
+      </nav>
+
+      <button class="icon-btn" id="view-mode-toggle-btn" onclick="toggleViewMode()" type="button" title="Preview the mobile app layout" aria-pressed="false">
+        <i class="ph ph-device-mobile" aria-hidden="true"></i> <span>Mobile view</span>
+      </button>
+
+      <a href="/api/docs" target="_blank" rel="noopener" class="icon-btn" title="Open Swagger API documentation">
+        <i class="ph ph-book-open-text" aria-hidden="true"></i> <span>API</span>
+      </a>
+
+      <div class="api-badge" id="api-status-badge" title="NestJS REST API status">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <span id="api-status-text">Connecting…</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= App ================= -->
+  <main class="app-container desktop-mode" id="app-main-container">
+    <div class="device-wrapper">
+      <div class="phone-notch" aria-hidden="true"><span class="phone-speaker"></span></div>
+
+      <div class="main-screen">
+
+        <!-- ============================================= -->
+        <!-- VIEW 1 · ARTISAN DASHBOARD (Devki)             -->
+        <!-- ============================================= -->
+        <section id="artisan-dashboard-view" class="view active">
+          <div class="welcome-panel">
+            <div class="welcome-copy">
+              <p class="welcome-eyebrow">Artisan studio · Odisha</p>
+              <h2>नमस्ते, Devki <span class="wave" aria-hidden="true">👋</span></h2>
+              <p class="welcome-sub">Your terracotta, your voice, your credit — captured by speech, priced fairly, protected by provenance.</p>
+              <div class="welcome-tags">
+                <span class="verified-tag"><i class="ph-fill ph-seal-check" aria-hidden="true"></i> Verified artisan</span>
+                <span class="craft-tag"><i class="ph ph-flower-lotus" aria-hidden="true"></i> Terracotta &amp; pottery</span>
+                <span class="craft-tag" id="voice-clone-tag"><i class="ph ph-waveform" aria-hidden="true"></i> Voice clone: <strong id="voice-clone-state">not set up</strong></span>
+              </div>
+            </div>
+            <div class="welcome-art" aria-hidden="true">
+              <i class="ph ph-flower-lotus"></i>
+            </div>
+          </div>
+
+          <div class="stats-row" role="list" aria-label="Business performance">
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon clay"><i class="ph ph-package" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="stat-products-count">—</span><span class="stat-label">Live listings</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon olive"><i class="ph ph-eye" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="stat-views-count">—</span><span class="stat-label">Total views</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon sand"><i class="ph ph-chats-circle" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="stat-inquiries-count">—</span><span class="stat-label">Buyer inquiries</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon clay"><i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="stat-hours-count">—</span><span class="stat-label">Craft hours logged</span></div>
+            </article>
+          </div>
+
+          <button class="voice-cta" id="btn-start-add-product" type="button">
+            <span class="cta-orb" aria-hidden="true"><i class="ph-bold ph-camera-plus"></i></span>
+            <span class="cta-copy">
+              <strong>List a craft with Shilpika AI</strong>
+              <span class="hindi-text">नया उत्पाद जोड़ें — 1 फ़ोटो + आवाज़ = तैयार लिस्टिंग</span>
+              <span class="cta-hint">Photo → quality gate → AI studio → voice story → 3-tier fair price → provenance card</span>
+            </span>
+            <i class="ph-bold ph-arrow-right cta-arrow" aria-hidden="true"></i>
+          </button>
+
+          <div class="section-head">
+            <h3><i class="ph ph-shelf" aria-hidden="true"></i> Your recent listings</h3>
+            <button class="link-btn" data-goto-role="buyer" type="button">View public shop <i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+          </div>
+
+          <div id="artisan-recent-products" class="recent-list" aria-live="polite">
+            <!-- Skeletons / cards rendered by app.js -->
+          </div>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- VIEW 2 · ADD-PRODUCT WIZARD                    -->
+        <!-- ============================================= -->
+        <section id="wizard-view" class="view wizard-view" hidden>
+          <div class="wizard-head">
+            <button class="icon-btn wizard-exit" id="btn-cancel-wizard" type="button" title="Close and return to dashboard">
+              <i class="ph ph-x" aria-hidden="true"></i>
+            </button>
+            <h2 class="wizard-title">New listing</h2>
+            <p class="wizard-sub hindi-text">चार आसान कदम — फ़ोटो, आवाज़, कीमत, प्रकाशित</p>
+          </div>
+
+          <ol class="stepper" id="wizard-stepper" aria-label="Listing steps">
+            <li class="step is-active" data-step="1"><span class="step-dot">1</span><span class="step-name">Photo</span></li>
+            <li class="step" data-step="2"><span class="step-dot">2</span><span class="step-name">Voice</span></li>
+            <li class="step" data-step="3"><span class="step-dot">3</span><span class="step-name">Catalog</span></li>
+            <li class="step" data-step="4"><span class="step-dot">4</span><span class="step-name">Price</span></li>
+            <li class="step" data-step="5"><span class="step-dot">5</span><span class="step-name">Publish</span></li>
+          </ol>
+
+          <!-- STEP 1 · PHOTO + SHILPIKA VISUAL AI -->
+          <div class="step-card" id="wizard-step-1" data-step-panel>
+            <header class="step-card-head">
+              <span class="step-kicker">Step 1 of 5 · Shilpika Visual AI</span>
+              <h3>Craft photo &amp; the quality gate</h3>
+              <p>Upload the raw workshop photo. A cheap local quality gate decides: pass → deterministic crop only (zero AI cost); fail → Gemini generative enhancement, with a fidelity check before you ever see it.</p>
+            </header>
+
+            <p class="field-label" id="preset-label">Choose a craft sample <span class="hindi-text">(नमूना चुनें)</span></p>
+            <div class="preset-grid" id="preset-thumbs-container" role="radiogroup" aria-labelledby="preset-label"></div>
+
+            <div class="pipeline-strip" id="pipeline-strip" aria-label="Image enhancement pipeline">
+              <div class="pipe-stage" data-stage="upload"><i class="ph ph-upload-simple" aria-hidden="true"></i><span>Upload<br><em>original kept untouched</em></span></div>
+              <div class="pipe-stage" data-stage="gate"><i class="ph ph-shield-check" aria-hidden="true"></i><span>Quality gate<br><em>blur · brightness · resolution</em></span></div>
+              <div class="pipe-stage" data-stage="fix"><i class="ph ph-magic-wand" aria-hidden="true"></i><span>Fix path<br><em>crop-only or Gemini</em></span></div>
+              <div class="pipe-stage" data-stage="fidelity"><i class="ph ph-scales" aria-hidden="true"></i><span>Fidelity check<br><em>color histogram drift</em></span></div>
+              <div class="pipe-stage" data-stage="approve"><i class="ph ph-hand-heart" aria-hidden="true"></i><span>Your approval<br><em>accept · regenerate · revert</em></span></div>
+            </div>
+            <p class="hint-line" id="pipeline-note">Pick a sample to run the pipeline.</p>
+
+            <div class="before-after" id="before-after-box">
+              <img src="" id="before-img" alt="Raw workshop photo, before AI enhancement" class="ba-img ba-before" draggable="false">
+              <div class="ba-after-clip" id="after-img-wrapper">
+                <img src="" id="after-img" alt="AI-enhanced studio photo, after" class="ba-img" draggable="false">
+              </div>
+              <span class="ba-badge ba-badge-before">Original · raw workshop</span>
+              <span class="ba-badge ba-badge-after">Enhanced · presentation aid</span>
+              <div class="ba-handle" id="slider-handle" aria-hidden="true">
+                <i class="ph-bold ph-caret-left"></i><i class="ph-bold ph-caret-right"></i>
+              </div>
+              <input type="range" class="ba-range" id="ba-range" min="0" max="100" value="50" aria-label="Compare before and after photos">
+            </div>
+            <p class="hint-line">Drag the handle — or use arrow keys — to compare. The original is always retained; the enhanced image never replaces it.</p>
+
+            <footer class="step-actions">
+              <button class="btn-ghost" id="btn-cancel-wizard-2" type="button"><i class="ph ph-x" aria-hidden="true"></i> Cancel</button>
+              <button class="btn-primary" data-goto-step="2" type="button">Next: record your voice <i class="ph-bold ph-microphone" aria-hidden="true"></i></button>
+            </footer>
+          </div>
+
+          <!-- STEP 2 · VOICE (SHILPIKA VANI) -->
+          <div class="step-card" id="wizard-step-2" data-step-panel hidden>
+            <header class="step-card-head">
+              <span class="step-kicker">Step 2 of 5 · Shilpika Vani</span>
+              <h3>Tell your product's story <span class="hindi-text">— अपनी आवाज़ में</span></h3>
+              <p>Zero typing. Speak naturally in your dialect about the material, the craft and the making — Hindi and English today, more dialects via Google STT as they come online.</p>
+            </header>
+
+            <div class="voice-panel">
+              <div class="mic-stage" id="mic-stage">
+                <div class="wavebars" id="wavebars" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <button class="mic-btn" id="mic-record-btn" type="button" aria-pressed="false" title="Tap to record">
+                  <i class="ph-fill ph-microphone" aria-hidden="true"></i>
+                </button>
+                <span class="rec-timer" id="rec-timer" hidden>00:00</span>
+              </div>
+              <p class="voice-status" id="mic-status-text">Tap the microphone and speak <span class="hindi-text">(बोलने के लिए दबाएं)</span></p>
+
+              <div class="transcript" id="transcript-preview" aria-live="polite">
+                <span class="muted">Your spoken words will appear here…</span>
+              </div>
+
+              <div class="sample-row">
+                <span class="muted small">Try a sample:</span>
+                <button class="chip-btn" data-voice-sample="hi" type="button"><i class="ph ph-waveform" aria-hidden="true"></i> हिन्दी नमूना</button>
+                <button class="chip-btn" data-voice-sample="en" type="button"><i class="ph ph-waveform" aria-hidden="true"></i> English sample</button>
+              </div>
+              <p class="hint-line">After the catalog is written, Shilpika Vani reads it back to you in your own voice for instant verification.</p>
+            </div>
+
+            <footer class="step-actions">
+              <button class="btn-ghost" data-goto-step="1" type="button"><i class="ph ph-arrow-left" aria-hidden="true"></i> Back</button>
+              <button class="btn-primary" data-goto-step="3" type="button">Generate AI catalog <i class="ph-bold ph-sparkle" aria-hidden="true"></i></button>
+            </footer>
+          </div>
+
+          <!-- STEP 3 · CATALOG + STORY ENGINE + PROVENANCE -->
+          <div class="step-card" id="wizard-step-3" data-step-panel hidden>
+            <header class="step-card-head">
+              <span class="step-kicker">Step 3 of 5 · Vani + Story Engine</span>
+              <h3>Bilingual catalog &amp; the artifact's story</h3>
+              <p id="ai-gen-status" class="gen-status">Ready to generate from your voice story.</p>
+            </header>
+
+            <div class="lang-tabs" role="tablist" aria-label="Listing language">
+              <button class="lang-tab active" id="tab-en" role="tab" aria-selected="true" data-lang-tab="en" type="button"><i class="ph ph-globe-hemisphere-west" aria-hidden="true"></i> English</button>
+              <button class="lang-tab" id="tab-hi" role="tab" aria-selected="false" data-lang-tab="hi" type="button"><i class="ph ph-globe-hemisphere-east" aria-hidden="true"></i> हिंदी</button>
+            </div>
+
+            <div id="tab-content-en" role="tabpanel" aria-labelledby="tab-en">
+              <div class="field">
+                <label for="cat-title-en">Product title</label>
+                <input type="text" class="input" id="cat-title-en" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="cat-desc-en">Listing description</label>
+                <textarea class="input" id="cat-desc-en" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div id="tab-content-hi" role="tabpanel" aria-labelledby="tab-hi" hidden>
+              <div class="field">
+                <label for="cat-title-hi" class="hindi-text">उत्पाद का शीर्षक</label>
+                <input type="text" class="input hindi-text" id="cat-title-hi" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="cat-desc-hi" class="hindi-text">विवरण</label>
+                <textarea class="input hindi-text" id="cat-desc-hi" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div class="story-engine-box">
+              <div class="story-head">
+                <h4><i class="ph-fill ph-book-open-text" aria-hidden="true"></i> AI Cultural Story Engine</h4>
+                <button class="chip-btn" id="btn-generate-story" type="button"><i class="ph ph-sparkle" aria-hidden="true"></i> Generate "Story of the Artifact"</button>
+              </div>
+              <p class="hint-line left">Gemini Vision reads your photo + name to identify the art form and draft its cultural story. Unknown facts stay unknown — edit anything.</p>
+              <div class="field">
+                <label for="cat-story">Story of the artifact <span class="muted">(origins · significance · uniqueness)</span></label>
+                <textarea class="input" id="cat-story" rows="4" placeholder="Generate a draft, then edit…"></textarea>
+              </div>
+            </div>
+
+            <div class="provenance-box">
+              <div class="story-head">
+                <h4><i class="ph-fill ph-seal-check" aria-hidden="true"></i> Cultural provenance · Anti-exploitation card</h4>
+              </div>
+              <div class="field-trio">
+                <div class="field">
+                  <label for="cat-category">Category</label>
+                  <input type="text" class="input" id="cat-category">
+                </div>
+                <div class="field">
+                  <label for="cat-craft">Art form / craft</label>
+                  <input type="text" class="input" id="cat-craft">
+                </div>
+                <div class="field">
+                  <label for="cat-origin">Origin</label>
+                  <input type="text" class="input" id="cat-origin">
+                </div>
+              </div>
+              <div class="field-trio">
+                <div class="field">
+                  <label for="cat-lineage"><i class="ph ph-tree-structure" aria-hidden="true"></i> Art lineage</label>
+                  <input type="text" class="input" id="cat-lineage" placeholder="e.g. Kumar family workshop">
+                </div>
+                <div class="field">
+                  <label for="cat-generations"><i class="ph ph-users-three" aria-hidden="true"></i> Generations</label>
+                  <input type="text" class="input" id="cat-generations" placeholder="e.g. 4th generation">
+                </div>
+                <div class="field">
+                  <label for="cat-hours"><i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i> Human hours on this piece</label>
+                  <input type="number" class="input" id="cat-hours" min="0" inputmode="numeric" placeholder="e.g. 50">
+                </div>
+              </div>
+              <div class="field">
+                <span class="field-label-static" id="tags-label">AI-generated tags</span>
+                <div class="tag-row" id="cat-tags-container" aria-labelledby="tags-label"></div>
+              </div>
+            </div>
+
+            <footer class="step-actions">
+              <button class="btn-ghost" data-goto-step="2" type="button"><i class="ph ph-arrow-left" aria-hidden="true"></i> Back</button>
+              <button class="btn-primary" data-goto-step="4" type="button">Next: fair pricing <i class="ph-bold ph-currency-inr" aria-hidden="true"></i></button>
+            </footer>
+          </div>
+
+          <!-- STEP 4 · SHILPIKA VALUE (3-TIER PRICING) -->
+          <div class="step-card" id="wizard-step-4" data-step-panel hidden>
+            <header class="step-card-head">
+              <span class="step-kicker">Step 4 of 5 · Shilpika Value</span>
+              <h3>Three-tier fair pricing <span class="hindi-text">— मूल्य निर्धारण</span></h3>
+              <p>Enter what the piece truly costs you. Shilpika computes a breakeven floor, a fair B2C price, and a premium B2B/export anchor — advisory always, never imposed.</p>
+            </header>
+
+            <div class="pricing-panel">
+              <div class="cost-fields">
+                <div class="cost-field">
+                  <label for="cost-material"><i class="ph ph-gem" aria-hidden="true"></i> Raw material <span class="hindi-text muted">सामग्री</span></label>
+                  <div class="currency-input"><span>₹</span><input type="number" id="cost-material" min="0" inputmode="numeric"></div>
+                </div>
+                <div class="cost-field">
+                  <label for="cost-labor"><i class="ph ph-hands-praying" aria-hidden="true"></i> Labor value <span class="hindi-text muted">मेहनताना</span></label>
+                  <div class="currency-input"><span>₹</span><input type="number" id="cost-labor" min="0" inputmode="numeric"></div>
+                </div>
+                <div class="cost-field">
+                  <label for="cost-transport"><i class="ph ph-truck" aria-hidden="true"></i> Packing &amp; transport <span class="hindi-text muted">पैकिंग</span></label>
+                  <div class="currency-input"><span>₹</span><input type="number" id="cost-transport" min="0" inputmode="numeric"></div>
+                </div>
+              </div>
+
+              <div class="margin-field">
+                <label for="margin-range">Your fair margin on B2C: <strong id="margin-value">25%</strong></label>
+                <input type="range" id="margin-range" min="10" max="60" step="5" value="25">
+                <div class="range-scale" aria-hidden="true"><span>10%</span><span>60%</span></div>
+              </div>
+
+              <div class="total-line" id="cost-total-line">
+                <span>Total cost (breakeven)</span>
+                <strong id="cost-total">₹0</strong>
+              </div>
+
+              <div class="tier-grid" aria-label="Recommended three-tier pricing">
+                <article class="tier-card">
+                  <span class="tier-name"><i class="ph ph-anchor-simple" aria-hidden="true"></i> Floor price</span>
+                  <span class="tier-desc">Breakeven — never go below this</span>
+                  <span class="tier-price" id="tier-floor">₹—</span>
+                </article>
+                <article class="tier-card featured">
+                  <span class="tier-name"><i class="ph ph-storefront" aria-hidden="true"></i> Standard B2C</span>
+                  <span class="tier-desc">Fair retail for direct buyers</span>
+                  <span class="tier-price" id="tier-b2c">₹—</span>
+                </article>
+                <article class="tier-card">
+                  <span class="tier-name"><i class="ph ph-airplane-tilt" aria-hidden="true"></i> Premium / B2B export</span>
+                  <span class="tier-desc">Collectors, curators &amp; export orders</span>
+                  <span class="tier-price" id="tier-b2b">₹—</span>
+                </article>
+              </div>
+
+              <div class="benchmark-card">
+                <div class="benchmark-head">
+                  <i class="ph-fill ph-trend-up" aria-hidden="true"></i>
+                  <span>Market benchmark · <span id="benchmark-region">—</span></span>
+                </div>
+                <div class="benchmark-bar" aria-hidden="true">
+                  <div class="benchmark-fill" id="benchmark-fill"></div>
+                  <div class="benchmark-marker" id="benchmark-marker"></div>
+                </div>
+                <p class="benchmark-note" id="benchmark-note">Observed range from craft exhibitions &amp; online listings.</p>
+              </div>
+
+              <div class="price-result" aria-live="polite">
+                <span class="price-result-label">Recommended listing range (B2C anchor)</span>
+                <span class="price-range" id="recommended-price-range">₹—</span>
+                <span class="price-breakdown" id="cost-breakdown-text">—</span>
+              </div>
+            </div>
+
+            <footer class="step-actions">
+              <button class="btn-ghost" data-goto-step="3" type="button"><i class="ph ph-arrow-left" aria-hidden="true"></i> Back</button>
+              <button class="btn-primary" data-goto-step="5" type="button">Review &amp; publish <i class="ph-bold ph-check" aria-hidden="true"></i></button>
+            </footer>
+          </div>
+
+          <!-- STEP 5 · REVIEW & PUBLISH -->
+          <div class="step-card" id="wizard-step-5" data-step-panel hidden>
+            <header class="step-card-head centered">
+              <span class="step-kicker">Step 5 of 5</span>
+              <h3>Ready for the world <span class="hindi-text">— तैयार!</span></h3>
+              <p>This is exactly how buyers will see your listing — provenance card included. Publish when you're happy.</p>
+            </header>
+
+            <article class="listing-preview" id="listing-preview" aria-label="Listing preview">
+              <img src="" id="preview-img" alt="Your enhanced product photo">
+              <div class="preview-body">
+                <h4 id="preview-title">—</h4>
+                <p class="preview-hindi hindi-text" id="preview-title-hi">—</p>
+                <p class="preview-desc" id="preview-desc">—</p>
+                <div class="preview-meta">
+                  <span class="preview-price" id="preview-price">₹—</span>
+                  <span class="preview-origin" id="preview-origin"><i class="ph ph-map-pin" aria-hidden="true"></i> —</span>
+                </div>
+                <p class="preview-provenance" id="preview-provenance"></p>
+                <div class="tag-row" id="preview-tags"></div>
+              </div>
+            </article>
+
+            <footer class="step-actions stack">
+              <button class="btn-primary lg" id="btn-publish-final" type="button">
+                <i class="ph-fill ph-rocket-launch" aria-hidden="true"></i> Publish to marketplace <span class="hindi-text">अभी प्रकाशित करें</span>
+              </button>
+              <button class="btn-ghost" data-goto-step="4" type="button"><i class="ph ph-pencil-simple" aria-hidden="true"></i> Edit details</button>
+            </footer>
+          </div>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- VIEW 3 · MARKETPLACE (BUYER)                   -->
+        <!-- ============================================= -->
+        <section id="marketplace-view" class="view" hidden>
+          <div class="market-hero">
+            <h2>The living marketplace</h2>
+            <p>Every piece carries verified cultural provenance and the artisan's own voice — no ghost credit, no anonymous appropriation.</p>
+          </div>
+
+          <div class="market-toolbar">
+            <div class="search-wrap">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+              <input type="search" class="search-input" id="marketplace-search" placeholder="Search crafts, artisans, regions… (खोजें)" aria-label="Search the marketplace">
+              <button class="search-clear" id="search-clear-btn" type="button" aria-label="Clear search" hidden><i class="ph ph-x-circle" aria-hidden="true"></i></button>
+            </div>
+            <label class="sort-wrap">
+              <i class="ph ph-funnel" aria-hidden="true"></i>
+              <select class="sort-select" id="marketplace-sort" aria-label="Sort products">
+                <option value="newest">Newest first</option>
+                <option value="price-asc">Price: low to high</option>
+                <option value="price-desc">Price: high to low</option>
+                <option value="popular">Most viewed</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="chip-scroll" id="category-chips" role="group" aria-label="Filter by category">
+            <button class="cat-chip active" data-category="all" type="button">All crafts</button>
+            <button class="cat-chip" data-category="Pottery" type="button"><i class="ph ph-amphora" aria-hidden="true"></i> Pottery</button>
+            <button class="cat-chip" data-category="Textile" type="button"><i class="ph ph-shapes" aria-hidden="true"></i> Textiles</button>
+            <button class="cat-chip" data-category="Clothing" type="button"><i class="ph ph-t-shirt" aria-hidden="true"></i> Clothing</button>
+            <button class="cat-chip" data-category="Home Decor" type="button"><i class="ph ph-lamp" aria-hidden="true"></i> Home decor</button>
+            <button class="cat-chip" data-category="Religious" type="button"><i class="ph ph-flame" aria-hidden="true"></i> Puja &amp; idols</button>
+          </div>
+
+          <div class="results-meta">
+            <span id="results-count" role="status">—</span>
+            <button class="link-btn" id="clear-filters-btn" type="button" hidden>Clear filters</button>
+          </div>
+
+          <div class="market-grid" id="marketplace-grid" aria-live="polite">
+            <!-- Skeletons / product cards rendered by app.js -->
+          </div>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- VIEW 4 · NILAAM (LIVE HERITAGE AUCTION)        -->
+        <!-- ============================================= -->
+        <section id="auction-view" class="view" hidden>
+          <div class="market-hero">
+            <h2>Shilpika Nilaam <span class="hindi-text market-hero-hindi">नीलाम</span></h2>
+            <p>Live auctions for rare and heritage pieces. Identity-verified bidding, transparent reserve prices, anti-sniping protection — the final minute is sacred.</p>
+          </div>
+
+          <div class="auction-layout" id="auction-layout">
+            <div class="auction-list" id="auction-list" aria-live="polite"><!-- rendered --></div>
+            <aside class="auction-bid-panel" id="auction-bid-panel" hidden>
+              <img id="auction-selected-img" src="" alt="">
+              <h4 id="auction-selected-title">—</h4>
+              <p class="muted small" id="auction-selected-meta">—</p>
+              <div class="auction-current">
+                <span class="muted small">Current bid</span>
+                <strong id="auction-current-bid">₹—</strong>
+                <span class="reserve-tag" id="auction-reserve-tag">—</span>
+              </div>
+              <div class="auction-timer big" id="auction-selected-timer">--:--</div>
+              <label class="field-label" for="auction-bid-input">Your bid (min <span id="auction-min-bid">₹—</span>)</label>
+              <div class="currency-input"><span>₹</span><input type="number" id="auction-bid-input" min="0" inputmode="numeric"></div>
+              <button class="btn-primary" id="btn-place-bid" type="button">
+                <i class="ph-fill ph-gavel" aria-hidden="true"></i> Place verified bid
+              </button>
+              <p class="hint-line">Bids are identity-verified (Auth0). A bid in the final minute extends the timer by 2 minutes.</p>
+              <div class="bid-history">
+                <h5><i class="ph ph-list-magnifying-glass" aria-hidden="true"></i> Bid ticker</h5>
+                <ul id="auction-bid-history"></ul>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ============================================= -->
+        <!-- VIEW 5 · ADMIN / IMPACT                        -->
+        <!-- ============================================= -->
+        <section id="admin-analytics-view" class="view" hidden>
+          <div class="market-hero">
+            <h2>Platform impact</h2>
+            <p>How the artisan ecosystem is growing — artisans onboarded, crafts listed, buyers connected, provenance coverage.</p>
+          </div>
+
+          <div class="stats-row" role="list" aria-label="Platform totals">
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon clay"><i class="ph ph-users-three" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-total-artisans">—</span><span class="stat-label">Registered artisans</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon olive"><i class="ph ph-package" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-total-products">—</span><span class="stat-label">Live listings</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon sand"><i class="ph ph-handshake" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-total-inquiries">—</span><span class="stat-label">Buyer connections</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon clay"><i class="ph ph-coins" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-avg-price">—</span><span class="stat-label">Avg. listing price</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon olive"><i class="ph ph-seal-check" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-provenance">—</span><span class="stat-label">Listings with provenance</span></div>
+            </article>
+          </div>
+
+          <div class="panel-grid">
+            <div class="panel">
+              <h4><i class="ph ph-chart-bar" aria-hidden="true"></i> Listings by craft category</h4>
+              <div class="cat-bars" id="admin-category-bars"></div>
+            </div>
+            <div class="panel">
+              <h4><i class="ph ph-plugs-connected" aria-hidden="true"></i> AI &amp; data services</h4>
+              <ul class="service-list" id="admin-service-list">
+                <li><span><i class="ph ph-sparkle" aria-hidden="true"></i> Gemini (catalog · story · translation · image-edit)</span><em class="svc-dot ok" data-svc="gemini">checking</em></li>
+                <li><span><i class="ph ph-waveform" aria-hidden="true"></i> ElevenLabs (clone · TTS · dubbing)</span><em class="svc-dot ok" data-svc="voice">checking</em></li>
+                <li><span><i class="ph ph-shield-check" aria-hidden="true"></i> Image quality gate (local, no AI cost)</span><em class="svc-dot ok" data-svc="gate">checking</em></li>
+                <li><span><i class="ph ph-database" aria-hidden="true"></i> PostgreSQL database</span><em class="svc-dot ok" data-svc="db">checking</em></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= PRODUCT DETAIL MODAL ================= -->
+  <div class="modal-overlay" id="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close-btn" type="button" aria-label="Close product details"><i class="ph ph-x" aria-hidden="true"></i></button>
+
+      <div class="modal-media">
+        <img src="" id="modal-product-img" alt="">
+        <button class="wish-btn" id="modal-wish-btn" type="button" aria-pressed="false" aria-label="Save to wishlist">
+          <i class="ph ph-heart" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-craft" id="modal-product-craft">—</p>
+        <h2 id="modal-product-title">—</h2>
+        <p class="modal-hindi hindi-text" id="modal-product-hindi-title"></p>
+
+        <div class="modal-price-row">
+          <span class="modal-price" id="modal-product-price">₹—</span>
+          <span class="modal-origin" id="modal-product-origin"><i class="ph ph-map-pin" aria-hidden="true"></i> —</span>
+        </div>
+
+        <div class="tier-line" id="modal-tier-line">
+          <span><i class="ph ph-anchor-simple" aria-hidden="true"></i> Floor ₹<b id="modal-tier-floor">—</b></span>
+          <span><i class="ph ph-storefront" aria-hidden="true"></i> B2C ₹<b id="modal-tier-b2c">—</b></span>
+          <span><i class="ph ph-airplane-tilt" aria-hidden="true"></i> Export ₹<b id="modal-tier-b2b">—</b></span>
+        </div>
+
+        <button class="listen-btn" id="listen-story-btn" type="button">
+          <i class="ph-fill ph-speaker-high" aria-hidden="true"></i>
+          <span>Listen to the artisan's story <span class="hindi-text">कहानी सुनें</span></span>
+          <i class="ph ph-play" aria-hidden="true"></i>
+        </button>
+
+        <p class="modal-desc" id="modal-product-desc">—</p>
+        <div class="tag-row" id="modal-product-tags"></div>
+
+        <div class="provenance-card" id="modal-provenance-card">
+          <div class="provenance-head">
+            <i class="ph-fill ph-seal-check" aria-hidden="true"></i>
+            <span>Certificate of authenticity</span>
+            <button class="chip-btn sm" id="btn-download-certificate" type="button"><i class="ph ph-download-simple" aria-hidden="true"></i> Download</button>
+          </div>
+          <p class="provenance-line" id="modal-provenance-line">—</p>
+          <p class="provenance-hash" id="modal-provenance-hash"></p>
+        </div>
+
+        <div class="artisan-row">
+          <span class="artisan-avatar" id="modal-artisan-avatar" aria-hidden="true">D</span>
+          <div>
+            <strong id="modal-artisan-name">Devki</strong>
+            <span class="muted small">Verified master artisan · Odisha</span>
+          </div>
+        </div>
+
+        <!-- Awaaz Milan -->
+        <div class="awaaz-panel">
+          <div class="awaaz-head">
+            <i class="ph-fill ph-waves" aria-hidden="true"></i>
+            <div>
+              <strong>Awaaz Milan <span class="hindi-text">आवाज़ मिलन</span></strong>
+              <span class="muted small">Negotiate across languages — you speak English, hear Devki's reply in her own cloned voice.</span>
+            </div>
+          </div>
+          <div class="awaaz-stages" aria-hidden="true">
+            <span class="awaaz-stage" data-awaaz="stt"><i class="ph ph-waveform"></i> Speech-to-text</span>
+            <i class="ph ph-arrow-right"></i>
+            <span class="awaaz-stage" data-awaaz="translate"><i class="ph ph-translate"></i> Translate</span>
+            <i class="ph ph-arrow-right"></i>
+            <span class="awaaz-stage" data-awaaz="tts"><i class="ph ph-speaker-high"></i> Cloned voice</span>
+          </div>
+          <form class="awaaz-form" id="awaaz-form">
+            <input type="text" class="input" id="awaaz-input" placeholder="Ask in English: “Can you make two more by Diwali?”" aria-label="Your question for the artisan">
+            <button class="btn-primary sm" type="submit"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i> Ask</button>
+          </form>
+          <div class="awaaz-reply" id="awaaz-reply" hidden>
+            <p id="awaaz-reply-text">—</p>
+            <button class="chip-btn" id="btn-awaaz-play" type="button"><i class="ph-fill ph-speaker-high" aria-hidden="true"></i> Play in Devki's voice</button>
+          </div>
+        </div>
+
+        <form class="inquiry-form" id="inquiry-form">
+          <label for="inquiry-message">Or send a written inquiry <span class="hindi-text muted">संपर्क करें</span></label>
+          <textarea class="input" id="inquiry-message" rows="2" placeholder="Custom sizes, bulk orders, shipping — ask anything…" required></textarea>
+          <div class="inquiry-actions">
+            <button class="btn-ghost sm" id="share-product-btn" type="button"><i class="ph ph-link" aria-hidden="true"></i> Copy link</button>
+            <button class="btn-primary sm" type="submit"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i> Send inquiry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SAATHI AI (FLOATING ASSISTANT) ================= -->
+  <button class="saathi-fab" id="saathi-fab" type="button" aria-expanded="false" aria-controls="saathi-panel" title="Saathi AI — your voice assistant">
+    <i class="ph-fill ph-robot" aria-hidden="true"></i>
+  </button>
+  <div class="saathi-panel" id="saathi-panel" hidden role="dialog" aria-label="Saathi AI assistant">
+    <div class="saathi-head">
+      <i class="ph-fill ph-robot" aria-hidden="true"></i>
+      <div>
+        <strong>Saathi AI</strong>
+        <span class="muted small">Simple assistant for artisans — ask by voice or text</span>
+      </div>
+      <button class="modal-close sm" id="saathi-close" type="button" aria-label="Close Saathi"><i class="ph ph-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="saathi-quick">
+      <button class="chip-btn" data-saathi-q="How do I ship to Delhi?" type="button">How do I ship to Delhi?</button>
+      <button class="chip-btn" data-saathi-q="What colors are trending this festive season?" type="button">Festive colour trends?</button>
+      <button class="chip-btn" data-saathi-q="How does the auction work?" type="button">How does Nilaam work?</button>
+    </div>
+    <form class="saathi-form" id="saathi-form">
+      <input type="text" class="input" id="saathi-input" placeholder="Ask anything… (बोलकर या लिखकर)" aria-label="Ask Saathi">
+      <button class="btn-primary sm" type="submit"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i></button>
+    </form>
+    <div class="saathi-answer" id="saathi-answer" hidden>
+      <p id="saathi-answer-text">—</p>
+      <button class="chip-btn" id="btn-saathi-play" type="button"><i class="ph-fill ph-speaker-high" aria-hidden="true"></i> Play answer</button>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div class="toast-stack" id="toast-container" role="status" aria-live="polite"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
