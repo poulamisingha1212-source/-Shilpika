@@ -71,7 +71,9 @@ import { createDatabaseSource, APP_ENTITIES } from './database/database.helper';
           password: configService.get<string>('DATABASE_PASSWORD', 'password'),
           database: configService.get<string>('DATABASE_NAME', 'artisan_marketplace'),
           entities: APP_ENTITIES,
-          synchronize: configService.get<string>('NODE_ENV') === 'development',
+          synchronize:
+            process.env.DB_SYNCHRONIZE === 'true' ||
+            configService.get<string>('NODE_ENV') === 'development',
           logging: false,
           retryAttempts: 1,
           retryDelay: 500,
