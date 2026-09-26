@@ -14,6 +14,8 @@ import "../features/marketplace/product_detail_screen.dart";
 import "../features/pricing/pricing_screen.dart";
 import "../features/profile/artisan_profile_screen.dart";
 import "../features/settings/settings_screen.dart";
+import "../features/inquiry/inquiry_screen.dart";
+import "../features/inquiry/inquiries_list_screen.dart";
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -43,6 +45,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: "/pricing/:productId", builder: (c, s) => PricingScreen(productId: s.pathParameters["productId"]!)),
       GoRoute(path: "/artisan/:id", builder: (c, s) => ArtisanProfileScreen(artisanId: s.pathParameters["id"]!)),
       GoRoute(path: "/settings", builder: (c, s) => const SettingsScreen()),
+      GoRoute(
+        path: "/inquiry/:productId",
+        builder: (c, s) => InquiryScreen(
+          productId: s.pathParameters["productId"]!,
+          extra: s.extra,
+        ),
+      ),
+      GoRoute(
+        path: "/inquiries",
+        builder: (c, s) => const InquiriesListScreen(),
+      ),
     ],
   );
 });

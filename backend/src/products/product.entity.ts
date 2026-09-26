@@ -64,6 +64,15 @@ export class Product {
   @Column({ type: "simple-array", nullable: true })
   tags: string[];
 
+  @Column({ nullable: true, type: "text" })
+  careInstructions: string;
+
+  @Column({ nullable: true, type: "text" })
+  history: string;
+
+  @Column({ nullable: true })
+  videoUrl: string;
+
   @Column({ type: "enum", enum: ProductStatus, default: ProductStatus.DRAFT })
   status: ProductStatus;
 
@@ -72,6 +81,12 @@ export class Product {
 
   @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
   priceMax: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  aiRecommendedPriceMin: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  aiRecommendedPriceMax: number;
 
   @Column({ nullable: true })
   currency: string;

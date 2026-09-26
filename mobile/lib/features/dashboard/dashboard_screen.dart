@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+ï»¿import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:go_router/go_router.dart";
 import "../../shared/theme/app_theme.dart";
@@ -35,7 +35,7 @@ class DashboardScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (isArtisan) ...[
-              // Primary CTA — Add Product
+              // Primary CTA - Add Product
               GestureDetector(
                 onTap: () => context.push("/add-product"),
                 child: Container(
@@ -77,6 +77,8 @@ class DashboardScreen extends ConsumerWidget {
                 children: [
                   Expanded(child: _QuickAction(icon: Icons.inventory_2_outlined, label: "My Products", onTap: () => context.push("/my-products"))),
                   const SizedBox(width: 12),
+                  Expanded(child: _QuickAction(icon: Icons.chat_bubble_outline_rounded, label: "Inquiries", onTap: () => context.push("/inquiries"))),
+                  const SizedBox(width: 12),
                   Expanded(child: _QuickAction(icon: Icons.store_outlined, label: "Marketplace", onTap: () => context.push("/marketplace"))),
                 ],
               ),
@@ -111,6 +113,16 @@ class DashboardScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+              ),
+              const SizedBox(height: 24),
+              Text("Quick Actions", style: AppTheme.h3),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(child: _QuickAction(icon: Icons.store_outlined, label: "Marketplace", onTap: () => context.push("/marketplace"))),
+                  const SizedBox(width: 12),
+                  Expanded(child: _QuickAction(icon: Icons.mail_outline_rounded, label: "My Inquiries", onTap: () => context.push("/inquiries"))),
+                ],
               ),
             ],
           ],

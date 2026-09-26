@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -17,6 +18,8 @@ import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
+import { RolesGuard, Role } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @ApiTags('products')
 @Controller('products')
@@ -24,7 +27,8 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ARTISAN, Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new product (artisan)' })
   create(@CurrentUser() user: User, @Body() dto: CreateProductDto) {
@@ -61,7 +65,8 @@ export class ProductsController {
   }
 
   @Get('my')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ARTISAN, Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get current artisan's products" })
   myProducts(@CurrentUser() user: User) {
@@ -77,7 +82,8 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ARTISAN, Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a product (artisan)' })
   update(
@@ -89,10 +95,20 @@ export class ProductsController {
   }
 
   @Post(':id/publish')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ARTISAN, Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Publish a product listing' })
   publish(@Param('id') id: string, @CurrentUser() user: User) {
     return this.productsService.publish(id, user.id);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ARTISAN, Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a product (artisan owner only)' })
+  delete(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.productsService.delete(id, user.id);
   }
 }

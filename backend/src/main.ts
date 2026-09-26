@@ -27,14 +27,29 @@ async function bootstrap() {
   // Security (allow fonts and script assets for rich SPA UI)
   app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
   app.enableCors({
-    origin: env === 'production' ? false : '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
   });
 
   // Serve static web app from public directory
-  const publicDir = path.join(process.cwd(), 'public');
+  const fs = require('fs');
+  const publicDir = fs.existsSync(path.join(process.cwd(), 'public'))
+    ? path.join(process.cwd(), 'public')
+    : fs.existsSync(path.join(process.cwd(), 'backend', 'public'))
+    ? path.join(process.cwd(), 'backend', 'public')
+    : path.join(__dirname, '..', '..', 'public');
   app.use(express.static(publicDir));
+
+  // Serve uploaded and enhanced media
+  const uploadsDir = fs.existsSync(path.join(process.cwd(), 'backend', 'uploads'))
+    ? path.join(process.cwd(), 'backend', 'uploads')
+    : path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsDir));
 
   // Global prefix for API
   app.setGlobalPrefix('api/v1');

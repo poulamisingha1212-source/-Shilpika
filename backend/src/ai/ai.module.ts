@@ -7,11 +7,12 @@ import { ImageAiService } from './image/image-ai.service';
 import { VoiceService } from './voice/voice.service';
 import { AiController } from './ai.controller';
 import { ProductMedia } from '../media/product-media.entity';
+import { Product } from '../products/product.entity';
 import { MediaModule } from '../media/media.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([VoiceInput, AIListingVersion, ProductMedia]),
+    TypeOrmModule.forFeature([VoiceInput, AIListingVersion, ProductMedia, Product]),
     MediaModule,
   ],
   providers: [GeminiService, ImageAiService, VoiceService],

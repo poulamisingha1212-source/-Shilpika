@@ -28,6 +28,9 @@ export class User {
   @Column({ nullable: true })
   auth0Id: string;
 
+  @Column({ nullable: true })
+  passwordHash: string;
+
   @Column({ type: "enum", enum: UserRole, default: UserRole.BUYER })
   role: UserRole;
 
@@ -42,6 +45,9 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ default: false })
+  onboardingCompleted: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

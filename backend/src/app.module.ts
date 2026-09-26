@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 
@@ -14,9 +15,10 @@ import { PricingModule } from './pricing/pricing.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AuctionsModule } from './auctions/auctions.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { createDatabaseSource } from './database/database.helper';
+import { createDatabaseSource, APP_ENTITIES } from './database/database.helper';
 
 @Module({
   imports: [
@@ -54,21 +56,29 @@ import { createDatabaseSource } from './database/database.helper';
     // TypeORM (PostgreSQL with in-memory emulator fallback)
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get<string>('DATABASE_URL'),
-        host: configService.get<string>('DATABASE_HOST', 'localhost'),
-        port: configService.get<number>('DATABASE_PORT', 5432),
-        username: configService.get<string>('DATABASE_USER', 'postgres'),
-        password: configService.get<string>('DATABASE_PASSWORD', 'password'),
-        database: configService.get<string>('DATABASE_NAME', 'artisan_marketplace'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<string>('NODE_ENV') === 'development',
-        logging: false,
-        retryAttempts: 1,
-        retryDelay: 500,
-        ssl: configService.get<string>('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isSsl =
+          configService.get<string>('DATABASE_SSL') === 'true' ||
+          configService.get<string>('NODE_ENV') === 'production' ||
+          (configService.get<string>('DATABASE_URL') || '').includes('tsdb.cloud.timescale.com') ||
+          (configService.get<string>('DATABASE_HOST') || '').includes('tsdb.cloud.timescale.com');
+        return {
+          type: 'postgres',
+          url: configService.get<string>('DATABASE_URL'),
+          host: configService.get<string>('DATABASE_HOST', 'localhost'),
+          port: configService.get<number>('DATABASE_PORT', 5432),
+          username: configService.get<string>('DATABASE_USER', 'postgres'),
+          password: configService.get<string>('DATABASE_PASSWORD', 'password'),
+          database: configService.get<string>('DATABASE_NAME', 'artisan_marketplace'),
+          entities: APP_ENTITIES,
+          synchronize: configService.get<string>('NODE_ENV') === 'development',
+          logging: false,
+          retryAttempts: 1,
+          retryDelay: 500,
+          ssl: isSsl ? { rejectUnauthorized: false } : false,
+          extra: isSsl ? { ssl: { rejectUnauthorized: false } } : undefined,
+        };
+      },
       dataSourceFactory: async (options) => {
         if (!options) {
           throw new Error('Invalid options passed to dataSourceFactory');
@@ -97,8 +107,15 @@ import { createDatabaseSource } from './database/database.helper';
     MarketplaceModule,
     InquiriesModule,
     AnalyticsModule,
+    AuctionsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -7,10 +7,10 @@
   <meta name="description" content="Shilpika empowers rural artisans via generative AI, cultural provenance and voice-first commerce: quality-gated image enhancement, multilingual voice catalogs, three-tier fair pricing, live heritage auctions and cross-language voice negotiation.">
   <meta name="theme-color" content="#F6F0E6">
 
-  <!-- Fonts: Fraunces (craft display serif) + Work Sans (humanist UI) + Noto Sans Devanagari (Hindi) -->
+  <!-- Fonts: Fraunces (craft display serif) + Work Sans (humanist UI) + Noto Sans Devanagari (Hindi) + Noto Sans Bengali (Bengali) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
@@ -19,55 +19,282 @@
 </head>
 <body>
 
-  <!-- ================= Top Navigation ================= -->
-  <header class="top-header">
-    <div class="brand-section">
-      <div class="brand-icon" aria-hidden="true">
-        <i class="ph-fill ph-hand-heart"></i>
-      </div>
-      <div class="brand-title">
-        <h1>Shilpika <span class="hindi-text brand-hindi">शिल्पिका</span></h1>
-        <p>Voice-first, AI-native craft commerce · cultural provenance</p>
-      </div>
-    </div>
+  <!-- ================= Auth Screen ================= -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-card" id="auth-card">
 
-    <div class="nav-controls">
-      <nav class="role-switcher" aria-label="Switch workspace">
-        <button class="role-btn active" data-role="artisan" type="button">
-          <i class="ph ph-paint-brush" aria-hidden="true"></i> <span>Artisan</span>
+      <!-- Brand -->
+      <div class="login-brand">
+        <div class="brand-icon" aria-hidden="true"><i class="ph-fill ph-hand-heart"></i></div>
+        <h1>Shilpika <span class="hindi-text brand-hindi">शिल्पिका</span></h1>
+        <p data-i18n="brand_sub">Voice-first, AI-native craft commerce</p>
+      </div>
+
+      <!-- Language bar -->
+      <div class="login-lang-bar" aria-label="Language selection">
+        <button type="button" class="lang-pill-btn active" data-set-lang="en">English</button>
+        <button type="button" class="lang-pill-btn" data-set-lang="hi">हिन्दी</button>
+        <button type="button" class="lang-pill-btn" data-set-lang="bn">বাংলা</button>
+      </div>
+
+      <!-- ─── STEP 0: Choose how to continue ─── -->
+      <div id="auth-step-0">
+        <!-- Google Login via Auth0 -->
+        <button type="button" class="btn-google-login" id="btn-google-login">
+          <svg class="google-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            <path fill="none" d="M0 0h48v48H0z"/>
+          </svg>
+          <span data-i18n="btn_google_login">Continue with Google</span>
         </button>
-        <button class="role-btn" data-role="buyer" type="button">
-          <i class="ph ph-storefront" aria-hidden="true"></i> <span>Marketplace</span>
-        </button>
-        <button class="role-btn" data-role="auction" type="button">
-          <i class="ph ph-gavel" aria-hidden="true"></i> <span>Nilaam</span>
-        </button>
-        <button class="role-btn" data-role="admin" type="button">
-          <i class="ph ph-chart-line-up" aria-hidden="true"></i> <span>Admin</span>
-        </button>
+
+        <!-- Divider -->
+        <div class="login-divider"><span data-i18n="login_or">or</span></div>
+
+        <!-- Sign In / Sign Up tabs -->
+        <div class="auth-tabs" role="tablist" aria-label="Sign In or Sign Up">
+          <button type="button" class="auth-tab active" id="tab-auth-login" role="tab" aria-selected="true">
+            <i class="ph ph-sign-in" aria-hidden="true"></i>
+            <span data-i18n="tab_signin">Sign In</span>
+          </button>
+          <button type="button" class="auth-tab" id="tab-auth-signup" role="tab" aria-selected="false">
+            <i class="ph ph-user-plus" aria-hidden="true"></i>
+            <span data-i18n="tab_signup">Sign Up</span>
+          </button>
+        </div>
+
+        <!-- Sign In Form -->
+        <form id="signin-form" autocomplete="on">
+          <label class="field-label" for="signin-email" data-i18n="login_email_label">Email</label>
+          <input class="input" type="email" id="signin-email" placeholder="you@example.com" required autocomplete="email">
+
+          <label class="field-label" for="signin-password" data-i18n="login_password_label" style="margin-top:12px">Password</label>
+          <div class="password-input-wrap">
+            <input class="input" type="password" id="signin-password" placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" class="password-toggle-btn" id="toggle-signin-password-btn" aria-label="Show password">
+              <i class="ph ph-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="btn-primary login-submit" type="submit" id="signin-submit">
+            <i class="ph-bold ph-sign-in" aria-hidden="true"></i>
+            <span data-i18n="btn_submit_signin">Sign In</span>
+          </button>
+          <p class="hint-line" id="signin-error" hidden></p>
+        </form>
+
+        <!-- Sign Up Form -->
+        <form id="signup-form" autocomplete="on" hidden>
+          <!-- Step 1: Role selection -->
+          <div id="signup-step-role">
+            <p class="field-label" data-i18n="signup_role_label">I am a…</p>
+            <div class="auth-role-cards" role="radiogroup" aria-label="Account type">
+              <button type="button" class="auth-role-card selected" data-signup-role="buyer" aria-checked="true" role="radio">
+                <i class="ph ph-storefront" aria-hidden="true"></i>
+                <span class="role-card-title" data-i18n="signup_role_buyer">Buyer</span>
+                <span class="role-card-sub" data-i18n="signup_role_buyer_sub">Shop handcrafted goods</span>
+              </button>
+              <button type="button" class="auth-role-card" data-signup-role="artisan" aria-checked="false" role="radio">
+                <i class="ph ph-paint-brush" aria-hidden="true"></i>
+                <span class="role-card-title" data-i18n="signup_role_seller">Seller (Artisan)</span>
+                <span class="role-card-sub" data-i18n="signup_role_seller_sub">List & sell your crafts</span>
+              </button>
+            </div>
+
+            <label class="field-label" for="signup-name" data-i18n="login_name_label" style="margin-top:14px">Your Name</label>
+            <input class="input" type="text" id="signup-name" placeholder="e.g. Devki Mahapatra" required autocomplete="name">
+
+            <label class="field-label" for="signup-email" data-i18n="login_email_label" style="margin-top:12px">Email</label>
+            <input class="input" type="email" id="signup-email" placeholder="you@example.com" required autocomplete="email">
+
+            <label class="field-label" for="signup-password" data-i18n="login_password_label" style="margin-top:12px">Password</label>
+            <div class="password-input-wrap">
+              <input class="input" type="password" id="signup-password" placeholder="Min 8 characters" required autocomplete="new-password">
+              <button type="button" class="password-toggle-btn" id="toggle-signup-password-btn" aria-label="Show password">
+                <i class="ph ph-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <label class="field-label" for="signup-confirm-password" data-i18n="login_confirm_password_label" style="margin-top:12px">Confirm Password</label>
+            <div class="password-input-wrap">
+              <input class="input" type="password" id="signup-confirm-password" placeholder="••••••••" required autocomplete="new-password">
+              <button type="button" class="password-toggle-btn" id="toggle-signup-confirm-btn" aria-label="Show password">
+                <i class="ph ph-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <!-- Seller-only extra fields -->
+            <div id="signup-seller-fields" hidden>
+              <div class="seller-fields-divider">
+                <i class="ph ph-identification-card" aria-hidden="true"></i>
+                <span data-i18n="signup_seller_verification">Seller Verification</span>
+              </div>
+
+              <label class="field-label" for="signup-aadhaar" data-i18n="signup_aadhaar_label">Aadhaar Number</label>
+              <input class="input" type="text" id="signup-aadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" autocomplete="off"
+                pattern="[0-9 ]{14}" inputmode="numeric">
+              <p class="hint-line" data-i18n="signup_aadhaar_hint">Used only for seller identity verification. Never shared publicly.</p>
+
+              <label class="field-label" for="signup-address" data-i18n="signup_address_label" style="margin-top:12px">Workshop / Studio Address</label>
+              <textarea class="input" id="signup-address" rows="3" placeholder="Village / Town, District, State, PIN" style="resize:vertical"></textarea>
+            </div>
+
+            <button class="btn-primary login-submit" type="submit" id="signup-submit">
+              <i class="ph-bold ph-user-check" aria-hidden="true"></i>
+              <span data-i18n="btn_submit_signup">Create Account</span>
+            </button>
+            <p class="hint-line" id="signup-error" hidden></p>
+          </div>
+        </form>
+
+        <!-- Switch mode link -->
+        <div class="auth-switch-line">
+          <span id="auth-switch-prompt" data-i18n="switch_to_signup">Don't have an account?</span>
+          <button type="button" class="auth-switch-btn" id="btn-toggle-auth-mode" data-i18n="tab_signup">Sign Up</button>
+        </div>
+      </div>
+
+      <!-- ─── STEP 1: Google Onboarding & Role Selection ─── -->
+      <div id="auth-step-onboarding" hidden>
+        <div class="google-onboard-header">
+          <div class="google-onboard-avatar-wrap">
+            <img id="onboard-user-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='8' r='4' fill='%239A542A'/%3E%3Cpath d='M4 20c0-4 4-6 8-6s8 2 8 6' fill='%239A542A'/%3E%3C/svg%3E" alt="Avatar" class="google-onboard-avatar">
+            <span class="google-badge-pill" title="Verified with Google"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></span>
+          </div>
+          <h3 id="onboard-welcome-title" class="google-onboard-title">Welcome to Shilpika!</h3>
+          <p id="onboard-user-email" class="google-onboard-email"></p>
+          <div class="google-verified-badge">
+            <i class="ph-fill ph-check-circle" aria-hidden="true"></i>
+            <span data-i18n="google_verified">Google Account Verified</span>
+          </div>
+        </div>
+
+        <div class="google-onboard-body">
+          <p class="field-label" style="text-align:center;margin-bottom:10px" data-i18n="onboard_choose_role_prompt">
+            How would you like to use Shilpika?
+          </p>
+
+          <div class="auth-role-cards" role="radiogroup" aria-label="Account type">
+            <button type="button" class="auth-role-card selected" id="onboard-role-buyer" data-onboard-role="buyer" aria-checked="true" role="radio">
+              <i class="ph ph-storefront" aria-hidden="true"></i>
+              <span class="role-card-title" data-i18n="signup_role_buyer">Buyer</span>
+              <span class="role-card-sub" data-i18n="signup_role_buyer_sub">Shop handcrafted goods</span>
+            </button>
+            <button type="button" class="auth-role-card" id="onboard-role-artisan" data-onboard-role="artisan" aria-checked="false" role="radio">
+              <i class="ph ph-paint-brush" aria-hidden="true"></i>
+              <span class="role-card-title" data-i18n="signup_role_seller">Seller (Artisan)</span>
+              <span class="role-card-sub" data-i18n="signup_role_seller_sub">List & sell your crafts</span>
+            </button>
+          </div>
+
+          <!-- Seller-only verification fields -->
+          <div id="onboard-seller-fields" hidden style="margin-top:14px">
+            <div class="seller-fields-divider">
+              <i class="ph ph-identification-card" aria-hidden="true"></i>
+              <span data-i18n="signup_seller_verification">Seller Verification</span>
+            </div>
+
+            <label class="field-label" for="onboard-aadhaar" data-i18n="signup_aadhaar_label">Aadhaar Number</label>
+            <input class="input" type="text" id="onboard-aadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" autocomplete="off"
+              pattern="[0-9 ]{14}" inputmode="numeric">
+            <p class="hint-line" data-i18n="signup_aadhaar_hint">Used only for seller identity verification. Never shared publicly.</p>
+
+            <label class="field-label" for="onboard-address" data-i18n="signup_address_label" style="margin-top:12px">Workshop / Studio Address</label>
+            <textarea class="input" id="onboard-address" rows="3" placeholder="Village / Town, District, State, PIN" style="resize:vertical"></textarea>
+
+            <label class="field-label" for="onboard-craft" style="margin-top:12px">Craft Specialization (Optional)</label>
+            <input class="input" type="text" id="onboard-craft" placeholder="e.g. Terracotta Pottery, Handloom Silk, Dokra Craft">
+          </div>
+
+          <button class="btn-primary login-submit" type="button" id="onboard-submit" style="margin-top:18px">
+            <i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
+            <span id="onboard-submit-label" data-i18n="btn_complete_setup">Continue to Shilpika</span>
+          </button>
+          <p class="hint-line" id="onboard-error" hidden></p>
+
+          <div style="text-align:center;margin-top:14px">
+            <button type="button" class="auth-switch-btn" id="onboard-cancel-btn" style="color:var(--text-muted,#8c8275);font-size:0.82rem">
+              <i class="ph ph-sign-out" aria-hidden="true"></i> <span data-i18n="onboard_switch_account">Use another account</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================= App Layout with Sidebar ================= -->
+  <div class="app-layout" id="app-main-container">
+    <!-- Sidebar -->
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Portal Navigation">
+      <div class="sidebar-brand">
+        <div class="brand-icon" aria-hidden="true">
+          <i class="ph-fill ph-hand-heart"></i>
+        </div>
+        <div class="brand-info">
+          <span class="brand-name">Shilpika <span class="hindi-text brand-hindi">शिल्पिका</span></span>
+          <span class="portal-badge" id="portal-badge">Seller Portal</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav" aria-label="Portal Navigation">
+        <!-- Rendered dynamically for active role -->
       </nav>
 
-      <button class="icon-btn" id="view-mode-toggle-btn" onclick="toggleViewMode()" type="button" title="Preview the mobile app layout" aria-pressed="false">
-        <i class="ph ph-device-mobile" aria-hidden="true"></i> <span>Mobile view</span>
-      </button>
-
-      <a href="/api/docs" target="_blank" rel="noopener" class="icon-btn" title="Open Swagger API documentation">
-        <i class="ph ph-book-open-text" aria-hidden="true"></i> <span>API</span>
-      </a>
-
-      <div class="api-badge" id="api-status-badge" title="NestJS REST API status">
-        <span class="pulse-dot" aria-hidden="true"></span>
-        <span id="api-status-text">Connecting…</span>
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebar-user-card">
+          <span class="sidebar-user-avatar" id="sidebar-user-avatar">D</span>
+          <div class="sidebar-user-details">
+            <div class="sidebar-user-name-row">
+              <span class="sidebar-user-name" id="sidebar-user-name">Devki Mahapatra</span>
+              <span class="auth0-tag" id="sidebar-auth0-tag" title="Verified Auth0 (A0) Identity" hidden>A0</span>
+            </div>
+            <span class="sidebar-user-role" id="sidebar-user-role">Artisan</span>
+          </div>
+        </div>
+        <button class="sidebar-logout-btn" id="logout-btn" type="button" title="Sign out of portal">
+          <i class="ph ph-sign-out" aria-hidden="true"></i>
+          <span>Sign out</span>
+        </button>
       </div>
-    </div>
-  </header>
+    </aside>
 
-  <!-- ================= App ================= -->
-  <main class="app-container desktop-mode" id="app-main-container">
-    <div class="device-wrapper">
-      <div class="phone-notch" aria-hidden="true"><span class="phone-speaker"></span></div>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
-      <div class="main-screen">
+    <!-- Main Content Area -->
+    <div class="app-main-content">
+      <header class="content-topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" type="button" aria-label="Toggle navigation">
+            <i class="ph ph-list" aria-hidden="true"></i>
+          </button>
+          <div class="topbar-breadcrumb">
+            <span class="breadcrumb-portal" id="breadcrumb-portal">Seller Portal</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-view" id="breadcrumb-view">Studio Dashboard</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="lang-selector-wrap" id="lang-selector-wrap" title="Switch Language / ভাষা পরিবর্তন / भाषा बदलें">
+            <i class="ph-bold ph-globe" aria-hidden="true"></i>
+            <select id="lang-select" class="lang-select" aria-label="Select Language">
+              <option value="en">English</option>
+              <option value="hi">हिन्दी</option>
+              <option value="bn">বাংলা</option>
+            </select>
+          </div>
+          <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="Toggle dark mode" title="Switch between Light and Dark mode">
+            <i class="ph-bold ph-moon" id="theme-toggle-icon" aria-hidden="true"></i>
+            <span class="theme-toggle-label" id="theme-toggle-label">Dark</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="main-screen">
 
         <!-- ============================================= -->
         <!-- VIEW 1 · ARTISAN DASHBOARD (Devki)             -->
@@ -75,13 +302,13 @@
         <section id="artisan-dashboard-view" class="view active">
           <div class="welcome-panel">
             <div class="welcome-copy">
-              <p class="welcome-eyebrow">Artisan studio · Odisha</p>
-              <h2>नमस्ते, Devki <span class="wave" aria-hidden="true">👋</span></h2>
-              <p class="welcome-sub">Your terracotta, your voice, your credit — captured by speech, priced fairly, protected by provenance.</p>
+              <p class="welcome-eyebrow" data-i18n="welcome_eyebrow">Artisan studio · Odisha</p>
+              <h2><span data-i18n="greeting">नमस्ते,</span> <span id="greeting-name">…</span> <span class="wave" aria-hidden="true">👋</span></h2>
+              <p class="welcome-sub" data-i18n="welcome_sub">Your terracotta, your voice, your credit — captured by speech, priced fairly, protected by provenance.</p>
               <div class="welcome-tags">
-                <span class="verified-tag"><i class="ph-fill ph-seal-check" aria-hidden="true"></i> Verified artisan</span>
-                <span class="craft-tag"><i class="ph ph-flower-lotus" aria-hidden="true"></i> Terracotta &amp; pottery</span>
-                <span class="craft-tag" id="voice-clone-tag"><i class="ph ph-waveform" aria-hidden="true"></i> Voice clone: <strong id="voice-clone-state">not set up</strong></span>
+                <span class="verified-tag"><i class="ph-fill ph-seal-check" aria-hidden="true"></i> <span data-i18n="tag_verified">Verified artisan</span></span>
+                <span class="craft-tag"><i class="ph ph-flower-lotus" aria-hidden="true"></i> <span data-i18n="tag_craft">Terracotta &amp; pottery</span></span>
+                <span class="craft-tag" id="voice-clone-tag"><i class="ph ph-waveform" aria-hidden="true"></i> <span data-i18n="tag_voice_clone">Voice clone:</span> <strong id="voice-clone-state" data-i18n="tag_not_setup">not set up</strong></span>
               </div>
             </div>
             <div class="welcome-art" aria-hidden="true">
@@ -92,35 +319,35 @@
           <div class="stats-row" role="list" aria-label="Business performance">
             <article class="stat-card" role="listitem">
               <span class="stat-icon clay"><i class="ph ph-package" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="stat-products-count">—</span><span class="stat-label">Live listings</span></div>
+              <div><span class="stat-num" id="stat-products-count">—</span><span class="stat-label" data-i18n="stat_listings">Live listings</span></div>
             </article>
             <article class="stat-card" role="listitem">
               <span class="stat-icon olive"><i class="ph ph-eye" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="stat-views-count">—</span><span class="stat-label">Total views</span></div>
+              <div><span class="stat-num" id="stat-views-count">—</span><span class="stat-label" data-i18n="stat_views">Total views</span></div>
             </article>
             <article class="stat-card" role="listitem">
               <span class="stat-icon sand"><i class="ph ph-chats-circle" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="stat-inquiries-count">—</span><span class="stat-label">Buyer inquiries</span></div>
+              <div><span class="stat-num" id="stat-inquiries-count">—</span><span class="stat-label" data-i18n="stat_inquiries">Buyer inquiries</span></div>
             </article>
             <article class="stat-card" role="listitem">
               <span class="stat-icon clay"><i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="stat-hours-count">—</span><span class="stat-label">Craft hours logged</span></div>
+              <div><span class="stat-num" id="stat-hours-count">—</span><span class="stat-label" data-i18n="stat_hours">Craft hours logged</span></div>
             </article>
           </div>
 
           <button class="voice-cta" id="btn-start-add-product" type="button">
             <span class="cta-orb" aria-hidden="true"><i class="ph-bold ph-camera-plus"></i></span>
             <span class="cta-copy">
-              <strong>List a craft with Shilpika AI</strong>
-              <span class="hindi-text">नया उत्पाद जोड़ें — 1 फ़ोटो + आवाज़ = तैयार लिस्टिंग</span>
-              <span class="cta-hint">Photo → quality gate → AI studio → voice story → 3-tier fair price → provenance card</span>
+              <strong data-i18n="cta_title">List a craft with Shilpika AI</strong>
+              <span class="cta-subtitle" data-i18n="cta_sub">नया उत्पाद जोड़ें — 1 फ़ोटो + आवाज़ = तैयार लिस्टिंग</span>
+              <span class="cta-hint" data-i18n="cta_hint">Photo → quality gate → AI studio → voice story → 3-tier fair price → provenance card</span>
             </span>
             <i class="ph-bold ph-arrow-right cta-arrow" aria-hidden="true"></i>
           </button>
 
           <div class="section-head">
-            <h3><i class="ph ph-shelf" aria-hidden="true"></i> Your recent listings</h3>
-            <button class="link-btn" data-goto-role="buyer" type="button">View public shop <i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+            <h3><i class="ph ph-shelf" aria-hidden="true"></i> <span data-i18n="recent_listings">Your recent listings</span></h3>
+            <button class="link-btn" data-goto-role="buyer" type="button"><span data-i18n="view_public_shop">View public shop</span> <i class="ph ph-arrow-right" aria-hidden="true"></i></button>
           </div>
 
           <div id="artisan-recent-products" class="recent-list" aria-live="polite">
@@ -156,8 +383,13 @@
               <p>Upload the raw workshop photo. A cheap local quality gate decides: pass → deterministic crop only (zero AI cost); fail → Gemini generative enhancement, with a fidelity check before you ever see it.</p>
             </header>
 
-            <p class="field-label" id="preset-label">Choose a craft sample <span class="hindi-text">(नमूना चुनें)</span></p>
-            <div class="preset-grid" id="preset-thumbs-container" role="radiogroup" aria-labelledby="preset-label"></div>
+            <p class="field-label" id="photo-label">Upload your workshop photo <span class="hindi-text">(अपनी फ़ोटो अपलोड करें)</span></p>
+            <label class="upload-dropzone" id="upload-dropzone" for="craft-photo-input">
+              <i class="ph ph-upload-simple" aria-hidden="true"></i>
+              <strong>Tap to choose a photo</strong>
+              <span>Use the real photo from your workshop — it stays yours, always.</span>
+            </label>
+            <input type="file" id="craft-photo-input" accept="image/*" hidden>
 
             <div class="pipeline-strip" id="pipeline-strip" aria-label="Image enhancement pipeline">
               <div class="pipe-stage" data-stage="upload"><i class="ph ph-upload-simple" aria-hidden="true"></i><span>Upload<br><em>original kept untouched</em></span></div>
@@ -166,7 +398,7 @@
               <div class="pipe-stage" data-stage="fidelity"><i class="ph ph-scales" aria-hidden="true"></i><span>Fidelity check<br><em>color histogram drift</em></span></div>
               <div class="pipe-stage" data-stage="approve"><i class="ph ph-hand-heart" aria-hidden="true"></i><span>Your approval<br><em>accept · regenerate · revert</em></span></div>
             </div>
-            <p class="hint-line" id="pipeline-note">Pick a sample to run the pipeline.</p>
+            <p class="hint-line" id="pipeline-note">Upload a photo to run the pipeline.</p>
 
             <div class="before-after" id="before-after-box">
               <img src="" id="before-img" alt="Raw workshop photo, before AI enhancement" class="ba-img ba-before" draggable="false">
@@ -208,15 +440,9 @@
               </div>
               <p class="voice-status" id="mic-status-text">Tap the microphone and speak <span class="hindi-text">(बोलने के लिए दबाएं)</span></p>
 
-              <div class="transcript" id="transcript-preview" aria-live="polite">
-                <span class="muted">Your spoken words will appear here…</span>
-              </div>
+              <label class="field-label" for="transcript-input">What did you record? Edit or type your description here <span class="hindi-text">(अपने शब्दों में)</span></label>
+              <textarea class="input" id="transcript-input" rows="3" placeholder="e.g. Hand-thrown terracotta pot, red clay from my village, fired in a traditional kiln — takes me about ten hours…"></textarea>
 
-              <div class="sample-row">
-                <span class="muted small">Try a sample:</span>
-                <button class="chip-btn" data-voice-sample="hi" type="button"><i class="ph ph-waveform" aria-hidden="true"></i> हिन्दी नमूना</button>
-                <button class="chip-btn" data-voice-sample="en" type="button"><i class="ph ph-waveform" aria-hidden="true"></i> English sample</button>
-              </div>
               <p class="hint-line">After the catalog is written, Shilpika Vani reads it back to you in your own voice for instant verification.</p>
             </div>
 
@@ -387,6 +613,41 @@
                 <span class="price-range" id="recommended-price-range">₹—</span>
                 <span class="price-breakdown" id="cost-breakdown-text">—</span>
               </div>
+
+              <!-- Seller Selling Price Choice Card -->
+              <div class="seller-price-choice-card">
+                <div class="choice-header">
+                  <div class="choice-icon" aria-hidden="true"><i class="ph-fill ph-tag"></i></div>
+                  <div>
+                    <h4>Choose Your Selling Price <span class="hindi-text">— विक्रय मूल्य तय करें</span></h4>
+                    <p class="choice-sub">
+                      AI recommended fair range: <strong id="ai-rec-display-badge">₹— to ₹—</strong>. 
+                      <em>You have complete control to choose any price you want to sell your craft for.</em>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="price-selection-row">
+                  <div class="price-input-box">
+                    <label for="seller-chosen-price">Your Selling Price to Buyers (₹) <span class="required">*</span></label>
+                    <div class="currency-input lg">
+                      <span>₹</span>
+                      <input type="number" id="seller-chosen-price" min="1" step="1" placeholder="e.g. 850" required>
+                    </div>
+                  </div>
+                  <button type="button" class="btn-use-ai" id="btn-use-ai-price" title="Click to use the AI recommended fair B2C price">
+                    <i class="ph-bold ph-sparkle"></i> Use AI Recommended Price (<span id="ai-rec-btn-price">₹—</span>)
+                  </button>
+                </div>
+
+                <div class="privacy-guarantee-box">
+                  <i class="ph-fill ph-shield-check" aria-hidden="true"></i>
+                  <div>
+                    <strong>Artisan Privacy Guarantee:</strong>
+                    <span>Buyers will ONLY see your final listing price. Your raw material costs, labor breakdown, floor price, and AI recommendation ranges are strictly private to you and will NEVER be visible to buyers.</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <footer class="step-actions">
@@ -510,55 +771,81 @@
         <!-- ============================================= -->
         <!-- VIEW 5 · ADMIN / IMPACT                        -->
         <!-- ============================================= -->
+        <!-- ============================================= -->
+        <!-- VIEW 5 · ADMIN / IMPACT                        -->
+        <!-- ============================================= -->
         <section id="admin-analytics-view" class="view" hidden>
-          <div class="market-hero">
-            <h2>Platform impact</h2>
-            <p>How the artisan ecosystem is growing — artisans onboarded, crafts listed, buyers connected, provenance coverage.</p>
+          <div class="market-hero" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h2>Platform impact &amp; Program analytics</h2>
+              <p>Real-time metrics on artisan adoption, AI completion rates, pricing acceptance, and craft distribution.</p>
+            </div>
+            <div class="date-filter-group" style="display: flex; gap: 0.5rem; background: rgba(0,0,0,0.04); padding: 4px; border-radius: 999px;">
+              <button class="chip-btn sm date-filter-btn" data-days="7" type="button" onclick="setAdminTimeframe('7')">7 Days</button>
+              <button class="chip-btn sm date-filter-btn active" data-days="30" type="button" onclick="setAdminTimeframe('30')">30 Days</button>
+              <button class="chip-btn sm date-filter-btn" data-days="90" type="button" onclick="setAdminTimeframe('90')">90 Days</button>
+              <button class="chip-btn sm date-filter-btn" data-days="all" type="button" onclick="setAdminTimeframe('all')">All Time</button>
+            </div>
           </div>
 
           <div class="stats-row" role="list" aria-label="Platform totals">
             <article class="stat-card" role="listitem">
               <span class="stat-icon clay"><i class="ph ph-users-three" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="admin-total-artisans">—</span><span class="stat-label">Registered artisans</span></div>
+              <div><span class="stat-num" id="admin-total-artisans">—</span><span class="stat-label">Active artisans</span></div>
             </article>
             <article class="stat-card" role="listitem">
               <span class="stat-icon olive"><i class="ph ph-package" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="admin-total-products">—</span><span class="stat-label">Live listings</span></div>
+              <div><span class="stat-num" id="admin-total-products">—</span><span class="stat-label">Published listings</span></div>
             </article>
             <article class="stat-card" role="listitem">
               <span class="stat-icon sand"><i class="ph ph-handshake" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="admin-total-inquiries">—</span><span class="stat-label">Buyer connections</span></div>
+              <div><span class="stat-num" id="admin-total-inquiries">—</span><span class="stat-label">Buyer inquiries</span></div>
             </article>
             <article class="stat-card" role="listitem">
-              <span class="stat-icon clay"><i class="ph ph-coins" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="admin-avg-price">—</span><span class="stat-label">Avg. listing price</span></div>
+              <span class="stat-icon clay"><i class="ph ph-eye" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-total-views">—</span><span class="stat-label">Listing views</span></div>
             </article>
             <article class="stat-card" role="listitem">
-              <span class="stat-icon olive"><i class="ph ph-seal-check" aria-hidden="true"></i></span>
-              <div><span class="stat-num" id="admin-provenance">—</span><span class="stat-label">Listings with provenance</span></div>
+              <span class="stat-icon olive"><i class="ph ph-sparkle" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-catalog-rate">—</span><span class="stat-label">Catalog completion</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon clay"><i class="ph ph-waveform" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-voice-rate">—</span><span class="stat-label">Voice completion</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon olive"><i class="ph ph-image" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-image-rate">—</span><span class="stat-label">AI image enhance</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon sand"><i class="ph ph-check-circle" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-ai-accept-rate">—</span><span class="stat-label">AI catalog accept</span></div>
+            </article>
+            <article class="stat-card" role="listitem">
+              <span class="stat-icon clay"><i class="ph ph-currency-inr" aria-hidden="true"></i></span>
+              <div><span class="stat-num" id="admin-price-accept-rate">—</span><span class="stat-label">Price accept rate</span></div>
             </article>
           </div>
 
           <div class="panel-grid">
             <div class="panel">
-              <h4><i class="ph ph-chart-bar" aria-hidden="true"></i> Listings by craft category</h4>
-              <div class="cat-bars" id="admin-category-bars"></div>
+              <h4><i class="ph ph-chart-bar" aria-hidden="true"></i> Regional distribution</h4>
+              <div class="cat-bars" id="admin-region-bars">Loading…</div>
             </div>
             <div class="panel">
-              <h4><i class="ph ph-plugs-connected" aria-hidden="true"></i> AI &amp; data services</h4>
-              <ul class="service-list" id="admin-service-list">
-                <li><span><i class="ph ph-sparkle" aria-hidden="true"></i> Gemini (catalog · story · translation · image-edit)</span><em class="svc-dot ok" data-svc="gemini">checking</em></li>
-                <li><span><i class="ph ph-waveform" aria-hidden="true"></i> ElevenLabs (clone · TTS · dubbing)</span><em class="svc-dot ok" data-svc="voice">checking</em></li>
-                <li><span><i class="ph ph-shield-check" aria-hidden="true"></i> Image quality gate (local, no AI cost)</span><em class="svc-dot ok" data-svc="gate">checking</em></li>
-                <li><span><i class="ph ph-database" aria-hidden="true"></i> PostgreSQL database</span><em class="svc-dot ok" data-svc="db">checking</em></li>
-              </ul>
+              <h4><i class="ph ph-chart-pie" aria-hidden="true"></i> Craft distribution</h4>
+              <div class="cat-bars" id="admin-craft-bars">Loading…</div>
+            </div>
+            <div class="panel">
+              <h4><i class="ph ph-chat-circle-dots" aria-hidden="true"></i> Buyer inquiries breakdown</h4>
+              <div class="cat-bars" id="admin-inquiry-bars">Loading…</div>
             </div>
           </div>
         </section>
 
+        </main>
       </div>
     </div>
-  </main>
 
   <!-- ================= PRODUCT DETAIL MODAL ================= -->
   <div class="modal-overlay" id="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
@@ -578,14 +865,11 @@
         <p class="modal-hindi hindi-text" id="modal-product-hindi-title"></p>
 
         <div class="modal-price-row">
-          <span class="modal-price" id="modal-product-price">₹—</span>
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+            <span class="modal-price" id="modal-product-price">₹—</span>
+            <span class="fixed-price-pill" id="modal-fixed-price-badge" data-i18n="fixed_price_badge"><i class="ph-bold ph-tag" aria-hidden="true"></i> Fixed Price</span>
+          </div>
           <span class="modal-origin" id="modal-product-origin"><i class="ph ph-map-pin" aria-hidden="true"></i> —</span>
-        </div>
-
-        <div class="tier-line" id="modal-tier-line">
-          <span><i class="ph ph-anchor-simple" aria-hidden="true"></i> Floor ₹<b id="modal-tier-floor">—</b></span>
-          <span><i class="ph ph-storefront" aria-hidden="true"></i> B2C ₹<b id="modal-tier-b2c">—</b></span>
-          <span><i class="ph ph-airplane-tilt" aria-hidden="true"></i> Export ₹<b id="modal-tier-b2b">—</b></span>
         </div>
 
         <button class="listen-btn" id="listen-story-btn" type="button">
@@ -596,6 +880,36 @@
 
         <p class="modal-desc" id="modal-product-desc">—</p>
         <div class="tag-row" id="modal-product-tags"></div>
+
+        <!-- Craft Heritage & History -->
+        <div class="product-history-card" id="modal-history-card">
+          <div class="history-head">
+            <i class="ph-fill ph-book-open" aria-hidden="true"></i>
+            <span data-i18n="product_history_title">Craft Heritage & History</span>
+          </div>
+          <p class="history-text" id="modal-product-history">—</p>
+        </div>
+
+        <!-- Small YouTube Video Player -->
+        <div class="product-video-card" id="modal-video-card">
+          <div class="video-head">
+            <div class="video-head-title">
+              <i class="ph-fill ph-youtube-logo" style="color:#ef4444" aria-hidden="true"></i>
+              <span data-i18n="product_video_title">Craft Video Demonstration</span>
+            </div>
+            <span class="video-badge" data-i18n="artisan_showcase">Artisan Showcase</span>
+          </div>
+          <div class="youtube-player-wrap" id="modal-youtube-wrap">
+            <iframe id="modal-youtube-player"
+              src=""
+              title="Product Craft Video Demonstration"
+              loading="lazy"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
 
         <div class="provenance-card" id="modal-provenance-card">
           <div class="provenance-head">
@@ -611,7 +925,7 @@
           <span class="artisan-avatar" id="modal-artisan-avatar" aria-hidden="true">D</span>
           <div>
             <strong id="modal-artisan-name">Devki</strong>
-            <span class="muted small">Verified master artisan · Odisha</span>
+            <span class="muted small" id="modal-artisan-loc-badge">Verified master artisan · Odisha</span>
           </div>
         </div>
 
@@ -621,7 +935,7 @@
             <i class="ph-fill ph-waves" aria-hidden="true"></i>
             <div>
               <strong>Awaaz Milan <span class="hindi-text">आवाज़ मिलन</span></strong>
-              <span class="muted small">Negotiate across languages — you speak English, hear Devki's reply in her own cloned voice.</span>
+              <span class="muted small" id="awaaz-hint">Negotiate across languages — you ask in English, hear the reply in the artisan's own voice.</span>
             </div>
           </div>
           <div class="awaaz-stages" aria-hidden="true">
@@ -636,54 +950,53 @@
             <button class="btn-primary sm" type="submit"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i> Ask</button>
           </form>
           <div class="awaaz-reply" id="awaaz-reply" hidden>
+            <p class="hindi-text muted" id="awaaz-translate-text" hidden>—</p>
             <p id="awaaz-reply-text">—</p>
-            <button class="chip-btn" id="btn-awaaz-play" type="button"><i class="ph-fill ph-speaker-high" aria-hidden="true"></i> Play in Devki's voice</button>
+            <button class="chip-btn" id="btn-awaaz-play" type="button"><i class="ph-fill ph-speaker-high" aria-hidden="true"></i> <span id="awaaz-play-label">Play the reply</span></button>
           </div>
         </div>
 
-        <form class="inquiry-form" id="inquiry-form">
-          <label for="inquiry-message">Or send a written inquiry <span class="hindi-text muted">संपर्क करें</span></label>
-          <textarea class="input" id="inquiry-message" rows="2" placeholder="Custom sizes, bulk orders, shipping — ask anything…" required></textarea>
-          <div class="inquiry-actions">
-            <button class="btn-ghost sm" id="share-product-btn" type="button"><i class="ph ph-link" aria-hidden="true"></i> Copy link</button>
-            <button class="btn-primary sm" type="submit"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i> Send inquiry</button>
-          </div>
-        </form>
+        <div class="modal-foot-actions" style="margin-top:14px">
+          <button class="btn-ghost sm" id="share-product-btn" type="button" style="width:100%"><i class="ph ph-link" aria-hidden="true"></i> <span data-i18n="copy_product_link">Copy product link</span></button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ================= SAATHI AI (FLOATING ASSISTANT) ================= -->
-  <button class="saathi-fab" id="saathi-fab" type="button" aria-expanded="false" aria-controls="saathi-panel" title="Saathi AI — your voice assistant">
+  <button class="saathi-fab" id="saathi-fab" type="button" aria-expanded="false" aria-controls="saathi-panel" title="Saathi AI — your live business assistant">
     <i class="ph-fill ph-robot" aria-hidden="true"></i>
   </button>
   <div class="saathi-panel" id="saathi-panel" hidden role="dialog" aria-label="Saathi AI assistant">
     <div class="saathi-head">
       <i class="ph-fill ph-robot" aria-hidden="true"></i>
       <div>
-        <strong>Saathi AI</strong>
-        <span class="muted small">Simple assistant for artisans — ask by voice or text</span>
+        <strong data-i18n="saathi_title">Saathi AI</strong>
+        <div class="saathi-meta-row">
+          <span class="saathi-live-badge"><span class="saathi-live-dot"></span> <span data-i18n="saathi_live">Live AI</span></span>
+          <span class="saathi-rate-limit-pill" id="saathi-rate-pill" data-i18n="saathi_quota" title="Rate limit: 10 queries per minute">10 req/min</span>
+        </div>
       </div>
       <button class="modal-close sm" id="saathi-close" type="button" aria-label="Close Saathi"><i class="ph ph-x" aria-hidden="true"></i></button>
     </div>
     <div class="saathi-quick">
-      <button class="chip-btn" data-saathi-q="How do I ship to Delhi?" type="button">How do I ship to Delhi?</button>
-      <button class="chip-btn" data-saathi-q="What colors are trending this festive season?" type="button">Festive colour trends?</button>
-      <button class="chip-btn" data-saathi-q="How does the auction work?" type="button">How does Nilaam work?</button>
+      <button class="chip-btn" id="saathi-chip-1" data-saathi-q="How do I ship to Delhi?" data-i18n="saathi_q1" type="button">How do I ship to Delhi?</button>
+      <button class="chip-btn" id="saathi-chip-2" data-saathi-q="What colors are trending this festive season?" data-i18n="saathi_q2" type="button">Festive colour trends?</button>
+      <button class="chip-btn" id="saathi-chip-3" data-saathi-q="How does the auction work?" data-i18n="saathi_q3" type="button">How does Nilaam work?</button>
     </div>
     <form class="saathi-form" id="saathi-form">
-      <input type="text" class="input" id="saathi-input" placeholder="Ask anything… (बोलकर या लिखकर)" aria-label="Ask Saathi">
+      <input type="text" class="input" id="saathi-input" data-i18n-ph="saathi_placeholder" placeholder="Ask anything… (बोलकर या लिखकर / মুখে বলে বা লিখে)" aria-label="Ask Saathi">
       <button class="btn-primary sm" type="submit"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i></button>
     </form>
     <div class="saathi-answer" id="saathi-answer" hidden>
       <p id="saathi-answer-text">—</p>
-      <button class="chip-btn" id="btn-saathi-play" type="button"><i class="ph-fill ph-speaker-high" aria-hidden="true"></i> Play answer</button>
+      <button class="chip-btn" id="btn-saathi-play" type="button"><i class="ph-fill ph-speaker-high" aria-hidden="true"></i> <span data-i18n="saathi_play">Play answer</span></button>
     </div>
   </div>
 
   <!-- Toasts -->
   <div class="toast-stack" id="toast-container" role="status" aria-live="polite"></div>
 
-  <script src="/app.js"></script>
+  <script src="/app.js?v=17"></script>
 </body>
 </html>

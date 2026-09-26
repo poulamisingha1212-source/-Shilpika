@@ -58,3 +58,8 @@ coverage/
 *.docx
 _docx_extracted/
 _docx_text.txt
+uploads/
+backend/uploads/
+test_node.txt
+auth0_login.png
+e2e-craft.jpg

@@ -3,12 +3,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { MulterModule } from "@nestjs/platform-express";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ProductMedia } from "./product-media.entity";
+import { Product } from "../products/product.entity";
 import { MediaService } from "./media.service";
 import { MediaController } from "./media.controller";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProductMedia]),
+    TypeOrmModule.forFeature([ProductMedia, Product]),
     MulterModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async () => ({

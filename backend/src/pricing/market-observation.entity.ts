@@ -8,10 +8,15 @@ import {
 
 @Entity("market_observations")
 @Index(["category", "region"])
+@Index(["craft", "region"])
 @Index(["observedAt"])
+@Index(["source"])
 export class MarketObservation {
   @PrimaryGeneratedColumn("uuid")
   id: string;
+
+  @Column({ nullable: true })
+  product: string;
 
   @Column({ nullable: true })
   category: string;
@@ -33,6 +38,9 @@ export class MarketObservation {
 
   @Column({ nullable: true })
   source: string;
+
+  @Column({ default: false })
+  isDemo: boolean;
 
   @Column({ type: "timestamp", nullable: true })
   observedAt: Date;

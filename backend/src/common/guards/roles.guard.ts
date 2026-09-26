@@ -18,12 +18,28 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!requiredRoles) return true;
+    if (!requiredRoles || requiredRoles.length === 0) {
+      return true;
+    }
 
     const { user } = context.switchToHttp().getRequest();
     if (!user) return false;
-    
-    const userRoles: string[] = user.roles || user["https://artisan-marketplace.api/roles"] || [];
-    return requiredRoles.some((role) => userRoles.includes(role));
+
+    const rawRoles: (string | undefined)[] = [
+      user.role,
+      ...(Array.isArray(user.roles) ? user.roles : user.roles ? [user.roles] : []),
+      ...(Array.isArray(user["https://artisan-marketplace.api/roles"])
+        ? user["https://artisan-marketplace.api/roles"]
+        : user["https://artisan-marketplace.api/roles"]
+        ? [user["https://artisan-marketplace.api/roles"]]
+        : []),
+      user["https://artisan-marketplace.api/role"],
+    ];
+
+    const userRoles = rawRoles
+      .filter((r): r is string => typeof r === "string")
+      .map((r) => r.toLowerCase().trim());
+
+    return requiredRoles.some((role) => userRoles.includes(role.toLowerCase()));
   }
 }

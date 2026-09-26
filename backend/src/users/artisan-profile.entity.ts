@@ -48,6 +48,12 @@ export class ArtisanProfile {
   @Column({ nullable: true })
   gstNumber: string;
 
+  @Column({ nullable: true })
+  aadhaarNumber: string;
+
+  @Column({ nullable: true })
+  address: string;
+
   @Column({ type: "simple-array", nullable: true })
   craftTags: string[];
 

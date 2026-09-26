@@ -14,6 +14,9 @@ export class CreateProductDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() origin?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() region?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsArray() tags?: string[];
+  @ApiProperty({ required: false }) @IsOptional() @IsString() careInstructions?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() thumbnailUrl?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() currency?: string;
 }
 
 export class UpdateProductDto {
@@ -27,7 +30,12 @@ export class UpdateProductDto {
   @IsOptional() @IsString() origin?: string;
   @IsOptional() @IsString() region?: string;
   @IsOptional() @IsArray() tags?: string[];
+  @IsOptional() @IsString() careInstructions?: string;
+  @IsOptional() @IsString() thumbnailUrl?: string;
+  @IsOptional() @IsString() currency?: string;
   @IsOptional() @IsEnum(ProductStatus) status?: ProductStatus;
   @IsOptional() @IsNumber() @Type(() => Number) priceMin?: number;
   @IsOptional() @IsNumber() @Type(() => Number) priceMax?: number;
+  @IsOptional() @IsNumber() @Type(() => Number) aiRecommendedPriceMin?: number;
+  @IsOptional() @IsNumber() @Type(() => Number) aiRecommendedPriceMax?: number;
 }

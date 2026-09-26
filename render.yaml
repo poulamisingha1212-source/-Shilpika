@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: shilpika-craft-marketplace
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/v1/marketplace/feed
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: "true"
+      - key: AUTH0_DOMAIN
+        value: dev-3c8eme7wlzr31szt.us.auth0.com
+      - key: AUTH0_CLIENT_ID
+        value: Bgfa62WQm7xteD0cKOWU3MRsIKKbWwyM
+      - key: AUTH0_CLIENT_SECRET
+        sync: false
+      - key: AUTH0_AUDIENCE
+        value: https://artisan-marketplace.api
+      - key: USE_AUTH0
+        value: "true"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        value: EXAVITQu4vr4xnSDxMaL
+      - key: JWT_SECRET
+        generateValue: true
+      - key: STORAGE_PROVIDER
+        value: local
+      - key: IMAGE_AI_PROVIDER
+        value: studio
+      - key: API_VERSION
+        value: v1
+      - key: THROTTLE_TTL
+        value: "60"
+      - key: THROTTLE_LIMIT
+        value: "30"

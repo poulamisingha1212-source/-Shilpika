@@ -12,8 +12,9 @@ import { User } from "../users/user.entity";
 import { Product } from "../products/product.entity";
 
 export enum InquiryStatus {
-  OPEN = "open",
-  REPLIED = "replied",
+  NEW = "new",
+  READ = "read",
+  RESPONDED = "responded",
   CLOSED = "closed",
 }
 
@@ -24,15 +25,15 @@ export class Inquiry {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn()
+  @ManyToOne(() => User, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "buyerId" })
   buyer: User;
 
   @Column()
   buyerId: string;
 
-  @ManyToOne(() => Product)
-  @JoinColumn()
+  @ManyToOne(() => Product, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "productId" })
   product: Product;
 
   @Column()
@@ -41,11 +42,14 @@ export class Inquiry {
   @Column({ type: "text" })
   message: string;
 
-  @Column({ type: "enum", enum: InquiryStatus, default: InquiryStatus.OPEN })
+  @Column({ type: "varchar", length: 32, default: InquiryStatus.NEW })
   status: InquiryStatus;
 
   @Column({ nullable: true, type: "text" })
   reply: string;
+
+  @Column({ nullable: true, type: "timestamp" })
+  respondedAt: Date;
 
   @CreateDateColumn()
   createdAt: Date;

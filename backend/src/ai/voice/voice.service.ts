@@ -5,6 +5,8 @@ import { Logger } from 'winston';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VoiceInput } from '../voice-input.entity';
+import { IVoiceProvider } from './voice-provider.interface';
+import { ElevenLabsVoiceProvider } from './elevenlabs.provider';
 
 export interface TranscriptResult {
   transcript: string;
@@ -12,6 +14,8 @@ export interface TranscriptResult {
   language: string;
   provider: string;
   isMock: boolean;
+  durationSecs?: number;
+  words?: Array<{ text: string; start?: number; end?: number }>;
 }
 
 export interface SpeechSynthesisResult {
@@ -19,12 +23,13 @@ export interface SpeechSynthesisResult {
   audioUrl?: string;
   provider: string;
   isMock: boolean;
+  contentType?: string;
+  languageUsed?: string;
 }
 
 @Injectable()
 export class VoiceService {
-  private readonly elevenLabsApiKey: string;
-  private readonly elevenLabsVoiceId: string;
+  private readonly provider: IVoiceProvider;
   private readonly isConfigured: boolean;
 
   constructor(
@@ -32,21 +37,29 @@ export class VoiceService {
     @InjectRepository(VoiceInput) private voiceInputRepo: Repository<VoiceInput>,
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
   ) {
-    this.elevenLabsApiKey = configService.get<string>('ELEVENLABS_API_KEY', '');
-    this.elevenLabsVoiceId = configService.get<string>('ELEVENLABS_VOICE_ID', '21m00Tcm4TlvDq8ikWAM');
-    this.isConfigured = !!this.elevenLabsApiKey;
+    const apiKey = configService.get<string>('ELEVENLABS_API_KEY', '');
+    const voiceId = configService.get<string>('ELEVENLABS_VOICE_ID', 'EXAVITQu4vr4xnSDxMaL');
+
+    this.provider = new ElevenLabsVoiceProvider(apiKey, voiceId, logger);
+    this.isConfigured = this.provider.isAvailable();
 
     if (this.isConfigured) {
-      this.logger.info('ElevenLabs voice service initialized', { context: 'VoiceService' });
+      this.logger.info('ElevenLabs voice service initialized (REAL mode active)', {
+        context: 'VoiceService',
+        voiceId,
+        provider: this.provider.name,
+      });
     } else {
-      this.logger.warn('ELEVENLABS_API_KEY not set — using mock voice service', { context: 'VoiceService' });
+      this.logger.warn('ELEVENLABS_API_KEY not configured — voice service in MOCK mode', {
+        context: 'VoiceService',
+      });
     }
   }
 
   /**
    * Transcribe an audio buffer to text.
-   * Falls back to returning the provided manual transcript (mock mode) if ElevenLabs is not configured.
-   * For speech-to-text, ElevenLabs Scribe API is used when available.
+   * If real provider is configured, uses ElevenLabs Scribe STT.
+   * Falls back to mock transcript if unconfigured or if error occurs with fallback provided.
    */
   async transcribeAudio(params: {
     productId: string;
@@ -57,86 +70,127 @@ export class VoiceService {
   }): Promise<TranscriptResult> {
     const lang = params.language || 'hi';
 
-    if (!this.isConfigured || !params.audioBuffer) {
+    if (!this.isConfigured || !params.audioBuffer || params.audioBuffer.length === 0) {
       return this.mockTranscript(params.productId, params.manualTranscript, lang);
     }
 
     try {
-      // ElevenLabs Speech-to-Text (Scribe)
-      const axios = require('axios');
-      const FormData = require('form-data');
-      const form = new FormData();
-      form.append('audio', params.audioBuffer, { filename: 'audio.mp3', contentType: params.audioMimeType || 'audio/mpeg' });
-      form.append('model_id', 'scribe_v1');
-      form.append('language_code', lang);
-
-      const start = Date.now();
-      const response = await axios.post('https://api.elevenlabs.io/v1/speech-to-text', form, {
-        headers: { 'xi-api-key': this.elevenLabsApiKey, ...form.getHeaders() },
-        timeout: 30000,
+      const result = await this.provider.transcribe(params.audioBuffer, {
+        mimeType: params.audioMimeType,
+        language: lang,
+        filename: `product_${params.productId}.m4a`,
       });
 
-      const transcript = response.data?.text || '';
-      const latency = Date.now() - start;
+      await this.saveVoiceInput(
+        params.productId,
+        result.transcript,
+        result.language || lang,
+        result.provider,
+        result.confidence,
+      );
 
-      await this.saveVoiceInput(params.productId, transcript, lang, 'elevenlabs', response.data?.confidence || 0.9);
-      this.logger.info('ElevenLabs transcription complete', { productId: params.productId, latencyMs: latency });
+      return {
+        transcript: result.transcript,
+        confidence: result.confidence,
+        language: result.language || lang,
+        durationSecs: result.durationSecs,
+        words: result.words,
+        provider: result.provider,
+        isMock: false,
+      };
+    } catch (err: any) {
+      this.logger.error('Voice transcription provider error', {
+        error: err.message,
+        productId: params.productId,
+      });
 
-      return { transcript, confidence: response.data?.confidence || 0.9, language: lang, provider: 'elevenlabs', isMock: false };
-    } catch (err) {
-      this.logger.error('ElevenLabs STT failed, using fallback', { error: err.message });
-      return this.mockTranscript(params.productId, params.manualTranscript, lang);
+      // If manual fallback transcript was provided, allow graceful fallback
+      if (params.manualTranscript) {
+        this.logger.warn('Falling back to manual transcript after provider failure');
+        return this.mockTranscript(params.productId, params.manualTranscript, lang);
+      }
+
+      throw err;
     }
   }
 
   /**
    * Synthesize text to speech using ElevenLabs TTS.
-   * Returns base64 audio or mock response.
+   * Spoken response uses the artisan's preferred language when supported.
+   * Returns base64 audio.
    */
   async synthesizeSpeech(text: string, language?: string): Promise<SpeechSynthesisResult> {
     if (!this.isConfigured) {
-      this.logger.warn('ElevenLabs TTS skipped — no API key', { context: 'VoiceService' });
-      return { provider: 'mock', isMock: true };
+      this.logger.warn('Speech synthesis skipped — ElevenLabs not configured', {
+        context: 'VoiceService',
+      });
+      return { provider: 'mock', isMock: true, languageUsed: language || 'en' };
     }
 
     try {
-      const axios = require('axios');
-      const start = Date.now();
-      const response = await axios.post(
-        `https://api.elevenlabs.io/v1/text-to-speech/${this.elevenLabsVoiceId}`,
-        {
-          text,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-        },
-        {
-          headers: { 'xi-api-key': this.elevenLabsApiKey, 'Content-Type': 'application/json' },
-          responseType: 'arraybuffer',
-          timeout: 30000,
-        },
-      );
+      const result = await this.provider.synthesize(text, { language });
+      const audioBase64 = result.audioBuffer.toString('base64');
 
-      const audioBase64 = Buffer.from(response.data).toString('base64');
-      this.logger.info('ElevenLabs TTS complete', { latencyMs: Date.now() - start });
-      return { audioBase64, provider: 'elevenlabs', isMock: false };
-    } catch (err) {
-      this.logger.error('ElevenLabs TTS failed', { error: err.message });
-      return { provider: 'elevenlabs-error', isMock: true };
+      return {
+        audioBase64,
+        contentType: result.contentType,
+        provider: result.provider,
+        isMock: false,
+        languageUsed: result.languageUsed,
+      };
+    } catch (err: any) {
+      this.logger.error('Voice synthesis failed', { error: err.message });
+      return {
+        provider: 'elevenlabs-error',
+        isMock: true,
+        languageUsed: language || 'en',
+      };
     }
   }
 
-  private async mockTranscript(productId: string, manual?: string, language = 'hi'): Promise<TranscriptResult> {
-    const transcript = manual || 'This is a mock transcript. Set ELEVENLABS_API_KEY for real speech-to-text.';
+  /**
+   * Check if a language is supported for voice synthesis.
+   */
+  isLanguageSupported(languageCode: string): boolean {
+    return this.provider.isLanguageSupported(languageCode);
+  }
+
+  private async mockTranscript(
+    productId: string,
+    manual?: string,
+    language = 'hi',
+  ): Promise<TranscriptResult> {
+    const transcript =
+      manual ||
+      'This is a handmade craft created with traditional artisan techniques.';
     await this.saveVoiceInput(productId, transcript, language, 'mock', 1.0);
-    return { transcript, confidence: 1.0, language, provider: 'mock', isMock: true };
+    return {
+      transcript,
+      confidence: 1.0,
+      language,
+      provider: 'mock',
+      isMock: true,
+    };
   }
 
-  private async saveVoiceInput(productId: string, transcript: string, language: string, provider: string, confidence: number): Promise<void> {
+  private async saveVoiceInput(
+    productId: string,
+    transcript: string,
+    language: string,
+    provider: string,
+    confidence: number,
+  ): Promise<void> {
     try {
-      const input = this.voiceInputRepo.create({ productId, transcript, language, provider, confidence });
+      const input = this.voiceInputRepo.create({
+        productId,
+        transcript,
+        language,
+        provider,
+        confidence,
+      });
       await this.voiceInputRepo.save(input);
-    } catch (e) {
-      this.logger.warn('Failed to save voice input', { error: e.message });
+    } catch (e: any) {
+      this.logger.warn('Failed to save voice input record', { error: e.message });
     }
   }
 }

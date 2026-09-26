@@ -41,6 +41,18 @@ export class PriceRecommendation {
   @Column({ default: false })
   artisanAccepted: boolean;
 
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  estimatedCost: number;
+
+  @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
+  suggestedMarginPercent: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  artisanSelectedPriceMin: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  artisanSelectedPriceMax: number;
+
   @Column({ nullable: true })
   dataAvailability: string;
 
