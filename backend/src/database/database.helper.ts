@@ -5,26 +5,26 @@ export const SEED_ARTISANS = [
     user: { email: 'priya.pottery@example.com', displayName: 'Priya Sharma', preferredLanguage: 'hi', role: 'artisan' },
     profile: { craftType: 'Pottery', region: 'Jaipur', state: 'Rajasthan', bio: 'Third-generation potter from Jaipur specializing in blue pottery with floral motifs.', craftTags: ['blue-pottery', 'rajasthani', 'traditional'] },
     products: [
-      { title: 'Blue Pottery Vase', titleHindi: 'नीली मिट्टी का फूलदान', category: 'Pottery', material: 'Clay', craft: 'Blue Pottery', origin: 'Jaipur', region: 'Rajasthan', tags: ['vase', 'blue-pottery', 'handmade', 'gift'], priceMin: 450, priceMax: 650, status: 'published', description: 'Hand-painted blue pottery vase with traditional floral patterns. Each piece is unique.', videoUrl: 'https://www.youtube.com/watch?v=kYv9qQ-mRCE', history: 'Traditional Jaipur Blue Pottery originated in the 19th century under Maharaja Sawai Ram Singh II. Made without clay using Egyptian paste and quartz powder, hand-painted with cobalt oxide pigments.' },
-      { title: 'Ceramic Tea Set', titleHindi: 'सिरेमिक चाय सेट', category: 'Pottery', material: 'Ceramic', craft: 'Pottery', origin: 'Jaipur', region: 'Rajasthan', tags: ['tea-set', 'ceramic', 'kitchenware'], priceMin: 1200, priceMax: 1800, status: 'published', description: 'Complete 6-piece tea set with teapot, cups, and saucers. Microwave safe.', videoUrl: 'https://www.youtube.com/watch?v=s5eU7x-j5L8', history: 'Hand-thrown studio pottery fired at 1200°C for durability while retaining organic clay textures crafted by generational artisan families.' },
-      { title: 'Wall Hanging Plate', titleHindi: 'दीवार की सजावटी थाली', category: 'Pottery', material: 'Clay', craft: 'Blue Pottery', origin: 'Jaipur', region: 'Rajasthan', tags: ['wall-decor', 'plate', 'blue-pottery'], priceMin: 350, priceMax: 500, status: 'draft', description: 'Decorative wall plate with peacock motif.', videoUrl: 'https://www.youtube.com/watch?v=kYv9qQ-mRCE', history: 'Traditional Rajasthani wall decor featuring hand-painted royal peacock motifs using natural mineral glazes.' },
+      { title: 'Blue Pottery Vase', titleHindi: 'नीली मिट्टी का फूलदान', titleBengali: 'নীল পটারির ফুলদানি', category: 'Pottery', material: 'Clay', craft: 'Blue Pottery', origin: 'Jaipur', region: 'Rajasthan', tags: ['vase', 'blue-pottery', 'handmade', 'gift'], priceMin: 450, priceMax: 650, status: 'published', description: 'Hand-painted blue pottery vase with traditional floral patterns. Each piece is unique.', videoUrl: 'https://www.youtube.com/watch?v=kYv9qQ-mRCE', history: 'Traditional Jaipur Blue Pottery originated in the 19th century under Maharaja Sawai Ram Singh II. Made without clay using Egyptian paste and quartz powder, hand-painted with cobalt oxide pigments.' },
+      { title: 'Ceramic Tea Set', titleHindi: 'सिरामिक चाय सेट', titleBengali: 'সিরামিক চায়ের সেট', category: 'Pottery', material: 'Ceramic', craft: 'Pottery', origin: 'Jaipur', region: 'Rajasthan', tags: ['tea-set', 'ceramic', 'kitchenware'], priceMin: 1200, priceMax: 1800, status: 'published', description: 'Complete 6-piece tea set with teapot, cups, and saucers. Microwave safe.', videoUrl: 'https://www.youtube.com/watch?v=s5eU7x-j5L8', history: 'Hand-thrown studio pottery fired at 1200°C for durability while retaining organic clay textures crafted by generational artisan families.' },
+      { title: 'Wall Hanging Plate', titleHindi: 'दीवार की सजावटी थाली', titleBengali: 'দেয়ালের সাজসজ্জার থালা', category: 'Pottery', material: 'Clay', craft: 'Blue Pottery', origin: 'Jaipur', region: 'Rajasthan', tags: ['wall-decor', 'plate', 'blue-pottery'], priceMin: 350, priceMax: 500, status: 'draft', description: 'Decorative wall plate with peacock motif.', videoUrl: 'https://www.youtube.com/watch?v=kYv9qQ-mRCE', history: 'Traditional Rajasthani wall decor featuring hand-painted royal peacock motifs using natural mineral glazes.' },
     ],
   },
   {
     user: { email: 'ravi.weaver@example.com', displayName: 'Ravi Kumar', preferredLanguage: 'hi', role: 'artisan' },
     profile: { craftType: 'Weaving', region: 'Varanasi', state: 'Uttar Pradesh', bio: 'Master weaver creating authentic Banarasi silk sarees for over 20 years.', craftTags: ['banarasi', 'silk', 'saree', 'weaving'] },
     products: [
-      { title: 'Banarasi Silk Saree', titleHindi: 'बनারসী रेशम साड़ी', category: 'Textile', material: 'Pure Silk', craft: 'Banarasi Weaving', origin: 'Varanasi', region: 'Uttar Pradesh', tags: ['saree', 'banarasi', 'silk', 'bridal', 'traditional'], priceMin: 8000, priceMax: 15000, status: 'published', description: 'Authentic Banarasi silk saree with zari border and intricate brocade work. Perfect for weddings.', videoUrl: 'https://www.youtube.com/watch?v=Fj2F7eXv9xI', history: 'Dating back to the Rigvedic era and perfected under the Mughal dynasty, authentic Banarasi silk takes up to 6 months to weave on heritage pit looms.' },
-      { title: 'Silk Stole', titleHindi: 'रेशम का दुपट्टा', category: 'Textile', material: 'Silk', craft: 'Weaving', origin: 'Varanasi', region: 'Uttar Pradesh', tags: ['stole', 'silk', 'dupatta', 'gift'], priceMin: 1500, priceMax: 2500, status: 'published', description: 'Hand-woven silk stole with geometric patterns.', videoUrl: 'https://www.youtube.com/watch?v=Fj2F7eXv9xI', history: 'Ancestral warp-and-weft handloom technique passed down through 5 generations of Varanasi master weavers.' },
-      { title: 'Cotton Handloom Shirt Fabric', titleHindi: 'कपास हथकरघा कपड़ा', category: 'Textile', material: 'Cotton', craft: 'Handloom', origin: 'Varanasi', region: 'Uttar Pradesh', tags: ['fabric', 'cotton', 'handloom'], priceMin: 600, priceMax: 900, status: 'published', description: '2.5m hand-woven cotton fabric suitable for shirt.', videoUrl: 'https://www.youtube.com/watch?v=Fj2F7eXv9xI', history: 'Spun from organic indigenous cotton fibers on traditional non-electric wooden handlooms in rural craft clusters.' },
+      { title: 'Banarasi Silk Saree', titleHindi: 'बनারসী रेशम साड़ी', titleBengali: 'বনারসি সিল্ক শাড়ি', category: 'Textile', material: 'Pure Silk', craft: 'Banarasi Weaving', origin: 'Varanasi', region: 'Uttar Pradesh', tags: ['saree', 'banarasi', 'silk', 'bridal', 'traditional'], priceMin: 8000, priceMax: 15000, status: 'published', description: 'Authentic Banarasi silk saree with zari border and intricate brocade work. Perfect for weddings.', videoUrl: 'https://www.youtube.com/watch?v=Fj2F7eXv9xI', history: 'Dating back to the Rigvedic era and perfected under the Mughal dynasty, authentic Banarasi silk takes up to 6 months to weave on heritage pit looms.' },
+      { title: 'Silk Stole', titleHindi: 'रेशम का दुपट्टा', titleBengali: 'রেশমের দুপাট্টা', category: 'Textile', material: 'Silk', craft: 'Weaving', origin: 'Varanasi', region: 'Uttar Pradesh', tags: ['stole', 'silk', 'dupatta', 'gift'], priceMin: 1500, priceMax: 2500, status: 'published', description: 'Hand-woven silk stole with geometric patterns.', videoUrl: 'https://www.youtube.com/watch?v=Fj2F7eXv9xI', history: 'Ancestral warp-and-weft handloom technique passed down through 5 generations of Varanasi master weavers.' },
+      { title: 'Cotton Handloom Shirt Fabric', titleHindi: 'कपास हथकरघा कपड़ा', titleBengali: 'সুতির হাতলুম শার্ট কাপড়', category: 'Textile', material: 'Cotton', craft: 'Handloom', origin: 'Varanasi', region: 'Uttar Pradesh', tags: ['fabric', 'cotton', 'handloom'], priceMin: 600, priceMax: 900, status: 'published', description: '2.5m hand-woven cotton fabric suitable for shirt.', videoUrl: 'https://www.youtube.com/watch?v=Fj2F7eXv9xI', history: 'Spun from organic indigenous cotton fibers on traditional non-electric wooden handlooms in rural craft clusters.' },
     ],
   },
   {
     user: { email: 'meena.embroidery@example.com', displayName: 'Meena Devi', preferredLanguage: 'hi', role: 'artisan' },
     profile: { craftType: 'Embroidery', region: 'Lucknow', state: 'Uttar Pradesh', bio: 'Chikankari embroidery artist preserving the 400-year-old Mughal tradition of Lucknow.', craftTags: ['chikankari', 'embroidery', 'lucknow'] },
     products: [
-      { title: 'Chikankari Kurta', titleHindi: 'चिकनकारी कुर्ता', category: 'Clothing', material: 'Cotton Muslin', craft: 'Chikankari', origin: 'Lucknow', region: 'Uttar Pradesh', tags: ['kurta', 'chikankari', 'embroidery', 'traditional', 'ethnic'], priceMin: 1800, priceMax: 3200, status: 'published', description: 'Hand-embroidered chikankari kurta on fine cotton muslin. Traditional Lucknawi craftsmanship.', videoUrl: 'https://www.youtube.com/watch?v=5Q_GZ-rYl68', history: 'Chikankari was introduced to the royal courts of Awadh by Empress Noor Jahan in the 17th century. Includes 32 distinct hand-stitch variations.' },
-      { title: 'Embroidered Table Runner', titleHindi: 'कढ़ाई वाला टेबल रनर', category: 'Home Decor', material: 'Cotton', craft: 'Embroidery', origin: 'Lucknow', region: 'Uttar Pradesh', tags: ['table-runner', 'embroidery', 'home-decor', 'gift'], priceMin: 500, priceMax: 900, status: 'published', description: '60x120cm hand-embroidered table runner with floral motifs.', videoUrl: 'https://www.youtube.com/watch?v=5Q_GZ-rYl68', history: 'Awadhi needlework heritage preserved by rural women artisan self-help collectives using shadow-work on pure organic cotton.' },
+      { title: 'Chikankari Kurta', titleHindi: 'चिकनकारी कुर्ता', titleBengali: 'চিকনকারি কুর্তা', category: 'Clothing', material: 'Cotton Muslin', craft: 'Chikankari', origin: 'Lucknow', region: 'Uttar Pradesh', tags: ['kurta', 'chikankari', 'embroidery', 'traditional', 'ethnic'], priceMin: 1800, priceMax: 3200, status: 'published', description: 'Hand-embroidered chikankari kurta on fine cotton muslin. Traditional Lucknawi craftsmanship.', videoUrl: 'https://www.youtube.com/watch?v=5Q_GZ-rYl68', history: 'Chikankari was introduced to the royal courts of Awadh by Empress Noor Jahan in the 17th century. Includes 32 distinct hand-stitch variations.' },
+      { title: 'Embroidered Table Runner', titleHindi: 'कढ़ाई वाला टेबल रनर', titleBengali: 'কুশিকাটা করা টেবিল রানার', category: 'Home Decor', material: 'Cotton', craft: 'Embroidery', origin: 'Lucknow', region: 'Uttar Pradesh', tags: ['table-runner', 'embroidery', 'home-decor', 'gift'], priceMin: 500, priceMax: 900, status: 'published', description: '60x120cm hand-embroidered table runner with floral motifs.', videoUrl: 'https://www.youtube.com/watch?v=5Q_GZ-rYl68', history: 'Awadhi needlework heritage preserved by rural women artisan self-help collectives using shadow-work on pure organic cotton.' },
     ],
   },
 ];
@@ -161,6 +161,30 @@ export async function seedIfEmpty(ds: DataSource): Promise<void> {
   }
 }
 
+// Bengali titles for demo products seeded before the titleBengali column existed.
+const BENGALI_TITLE_BACKFILL: Record<string, string> = {
+  'Blue Pottery Vase': 'নীল পটারির ফুলদানি',
+  'Ceramic Tea Set': 'সিরামিক চায়ের সেট',
+  'Wall Hanging Plate': 'দেয়ালের সাজসজ্জার থালা',
+  'Banarasi Silk Saree': 'বনারসি সিল্ক শাড়ি',
+  'Silk Stole': 'রেশমের দুপাট্টা',
+  'Cotton Handloom Shirt Fabric': 'সুতির হাতলুম শার্ট কাপড়',
+  'Chikankari Kurta': 'চিকনকারি কুর্তা',
+  'Embroidered Table Runner': 'কুশিকাটা করা টেবিল রানার',
+};
+
+export async function backfillBengaliTitles(ds: DataSource): Promise<void> {
+  try {
+    const productRepo = ds.getRepository(Product);
+    for (const [title, titleBengali] of Object.entries(BENGALI_TITLE_BACKFILL)) {
+      await productRepo.update({ title }, { titleBengali });
+    }
+    console.log('🌐 Bengali titles ensured for demo catalog');
+  } catch (err: any) {
+    console.warn('[Database] Bengali title backfill skipped:', err.message);
+  }
+}
+
 export async function createDatabaseSource(options: DataSourceOptions): Promise<DataSource> {
   const isTest = process.env.NODE_ENV === 'test' && process.env.FORCE_DB !== 'true';
   const forceMock = process.env.DATABASE_TYPE === 'mock' || process.env.DATABASE_TYPE === 'memory' || isTest;
@@ -202,6 +226,7 @@ export async function createDatabaseSource(options: DataSourceOptions): Promise<
       await ds.initialize();
       console.log('✅ Connected to external PostgreSQL database (Timescale / Cloud)');
       await seedIfEmpty(ds);
+      await backfillBengaliTitles(ds);
       return ds;
     } catch (err: any) {
       console.warn(`[Database] PostgreSQL connection failed (${err.message || 'connection refused'}). Falling back to in-memory PostgreSQL emulator.`);

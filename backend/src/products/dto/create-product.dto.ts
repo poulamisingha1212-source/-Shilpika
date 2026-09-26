@@ -8,6 +8,8 @@ export class CreateProductDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() description?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() titleHindi?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() descriptionHindi?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() titleBengali?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() descriptionBengali?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() category?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() material?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() craft?: string;
@@ -24,6 +26,8 @@ export class UpdateProductDto {
   @IsOptional() @IsString() description?: string;
   @IsOptional() @IsString() titleHindi?: string;
   @IsOptional() @IsString() descriptionHindi?: string;
+  @IsOptional() @IsString() titleBengali?: string;
+  @IsOptional() @IsString() descriptionBengali?: string;
   @IsOptional() @IsString() category?: string;
   @IsOptional() @IsString() material?: string;
   @IsOptional() @IsString() craft?: string;

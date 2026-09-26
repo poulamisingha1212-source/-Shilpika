@@ -15,7 +15,7 @@ Given the product image and/or the artisan's voice description transcript, extra
 RULES:
 - Do NOT invent facts. If a field is unknown, return null for that field.
 - Generate professional, buyer-friendly text.
-- Generate BOTH English and Hindi versions of title and description.
+- Generate English, Hindi AND Bengali versions of title and description.
 - Tags should be search-optimized keywords (5-10 tags).
 - Return ONLY valid JSON matching the schema below. No markdown, no extra text.
 
@@ -25,6 +25,8 @@ OUTPUT SCHEMA:
   "description": "string|null",
   "title_hindi": "string|null",
   "description_hindi": "string|null",
+  "title_bengali": "string|null",
+  "description_bengali": "string|null",
   "category": "string|null",
   "material": "string|null",
   "craft": "string|null",
@@ -41,6 +43,8 @@ const CatalogSchema = z.object({
   description: z.string().nullable(),
   title_hindi: z.string().nullable(),
   description_hindi: z.string().nullable(),
+  title_bengali: z.string().nullable(),
+  description_bengali: z.string().nullable(),
   category: z.string().nullable(),
   material: z.string().nullable(),
   craft: z.string().nullable(),
@@ -179,6 +183,8 @@ export class GeminiService {
       description: transcript || 'A beautiful handcrafted product made by a skilled artisan using traditional techniques.',
       title_hindi: 'हस्तनिर्मित कारीगर उत्पाद',
       description_hindi: 'एक कुशल कारीगर द्वारा पारंपरिक तकनीकों का उपयोग करके बनाया गया सुंदर हस्तनिर्मित उत्पाद।',
+      title_bengali: 'হাতে তৈরি কারিগরি পণ্য',
+      description_bengali: 'দক্ষ কারিগরের তৈরি ঐতিহ্যবাহী কৌশলে নির্মিত একটি সুন্দর হস্তশিল্প পণ্য।',
       category: 'Handicraft',
       material: null,
       craft: null,

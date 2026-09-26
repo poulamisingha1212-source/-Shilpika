@@ -47,6 +47,12 @@ export class Product {
   descriptionHindi: string;
 
   @Column({ nullable: true })
+  titleBengali: string;
+
+  @Column({ nullable: true, type: "text" })
+  descriptionBengali: string;
+
+  @Column({ nullable: true })
   category: string;
 
   @Column({ nullable: true })

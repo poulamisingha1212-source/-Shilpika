@@ -19,6 +19,7 @@ const NEUTRAL_PRESET = {
   id: 'custom',
   name: 'Your craft',
   titleHindi: '',
+  titleBengali: '',
   category: '',
   craft: '',
   region: '',
@@ -537,6 +538,11 @@ function setLanguage(lang, notify = false) {
     switchBtn.textContent = isSignup ? (t('tab_signin') || 'Sign In') : (t('tab_signup') || 'Sign Up');
   }
 
+  // Re-render product listings so the bilingual subtitle follows the new language
+  if ($('marketplace-grid') && $('results-count')) {
+    renderMarketplaceProducts(getVisibleProducts());
+  }
+
   if (notify) {
     showToast(t('lang_changed'), 'info');
   }
@@ -798,14 +804,16 @@ function bindLoginControls() {
   $('onboard-role-buyer')?.addEventListener('click', () => selectOnboardRole('buyer'));
   $('onboard-role-artisan')?.addEventListener('click', () => selectOnboardRole('artisan'));
 
-  // Format Aadhaar in onboarding input (XXXX XXXX XXXX)
-  $('onboard-aadhaar')?.addEventListener('input', (e) => {
-    let digits = e.target.value.replace(/\D/g, '').substring(0, 12);
-    let chunks = [];
-    for (let i = 0; i < digits.length; i += 4) {
-      chunks.push(digits.substring(i, i + 4));
-    }
-    e.target.value = chunks.join(' ');
+  // Format Aadhaar inputs (XXXX XXXX XXXX) — digits only, capped at 12
+  ['signup-aadhaar', 'onboard-aadhaar'].forEach((id) => {
+    $(id)?.addEventListener('input', (e) => {
+      const digits = e.target.value.replace(/\D/g, '').substring(0, 12);
+      const chunks = [];
+      for (let i = 0; i < digits.length; i += 4) {
+        chunks.push(digits.substring(i, i + 4));
+      }
+      e.target.value = chunks.join(' ');
+    });
   });
 
   // Complete onboarding submit
@@ -1495,6 +1503,13 @@ async function loadMarketplaceFeed() {
   renderMarketplaceProducts(getVisibleProducts());
 }
 
+// Second-line product name follows the selected UI language (en → English only, hi → Hindi, bn → Bengali)
+function productSubTitle(p) {
+  if (state.currentLang === 'bn') return p.titleBengali || '';
+  if (state.currentLang === 'hi') return p.titleHindi || '';
+  return '';
+}
+
 function getVisibleProducts() {
   let list = [...state.marketplaceProducts];
   if (state.selectedCategory !== 'all') {
@@ -1504,7 +1519,7 @@ function getVisibleProducts() {
   if (state.searchQuery) {
     const q = state.searchQuery.toLowerCase();
     list = list.filter((p) =>
-      [p.title, p.titleHindi, p.craft, p.region, p.category].some((f) => (f || '').toLowerCase().includes(q)));
+      [p.title, p.titleHindi, p.titleBengali, p.craft, p.region, p.category].some((f) => (f || '').toLowerCase().includes(q)));
   }
   switch (state.sortBy) {
     case 'price-asc': list.sort((a, b) => (a.priceMin || 0) - (b.priceMin || 0)); break;
@@ -1537,6 +1552,7 @@ function renderMarketplaceProducts(products) {
 
   grid.innerHTML = products.map((p) => {
     const saved = state.wishlist.has(p.id);
+    const sub = productSubTitle(p);
     return `
       <article class="product-card" data-product="${esc(p.id)}" tabindex="0" role="button" aria-label="${esc(p.title)}">
         <div class="product-media">
@@ -1551,7 +1567,7 @@ function renderMarketplaceProducts(products) {
         <div class="product-body">
           <div>
             <div class="product-title">${esc(p.title)}</div>
-            ${p.titleHindi ? `<div class="product-hindi">${esc(p.titleHindi)}</div>` : ''}
+            ${sub ? `<div class="product-hindi">${esc(sub)}</div>` : ''}
           </div>
           <div class="product-artisan">
             <span class="artisan-avatar" aria-hidden="true">${initials(p.artisanName || '—')}</span>
@@ -1743,7 +1759,7 @@ function openProductModal(productId) {
   const titleEl = $('modal-product-title');
   if (titleEl) titleEl.textContent = product.title || 'Handcrafted Craft';
   const hindiTitleEl = $('modal-product-hindi-title');
-  if (hindiTitleEl) hindiTitleEl.textContent = product.titleHindi || '';
+  if (hindiTitleEl) hindiTitleEl.textContent = productSubTitle(product);
 
   // 3. Fixed Price set by the seller
   const fixedPrice = product.priceMax || product.priceMin;
@@ -1843,7 +1859,10 @@ function closeProductModal() {
 function playProductAudio() {
   const p = state.selectedProductDetail;
   if (!p) return;
-  const text = p.titleHindi ? `${p.titleHindi}। ${p.description || ''}` : (p.description || p.title);
+  const text = (() => {
+    const sub = productSubTitle(p);
+    return sub ? `${sub}। ${p.description || ''}` : (p.description || p.title);
+  })();
   speakAloud(text);
   showToast('Playing the artisan\'s story…', 'info');
 }
@@ -2866,6 +2885,7 @@ async function triggerAiCatalogGeneration() {
         const data = await res.json();
         // API returns snake_case; the form binds camelCase
         data.titleHindi = data.titleHindi || data.title_hindi || '';
+        data.titleBengali = data.titleBengali || data.title_bengali || '';
         data.descriptionHindi = data.descriptionHindi || data.description_hindi || '';
         state.currentCatalog = data;
       } else {
@@ -2888,6 +2908,7 @@ function fallbackCatalog() {
   return {
     title: p.name,
     titleHindi: p.titleHindi,
+    titleBengali: p.titleBengali || '',
     description: p.speechEnglish,
     descriptionHindi: p.speechHindi,
     category: p.category,
@@ -3135,6 +3156,7 @@ async function publishProductNow() {
   const payload = {
     title: $('cat-title-en').value || 'Untitled listing',
     titleHindi: $('cat-title-hi').value || '',
+    titleBengali: state.currentCatalog?.titleBengali || '',
     description: storyText ? `${description}\n\n${storyText}` : description,
     descriptionHindi,
     category: $('cat-category').value || '',
