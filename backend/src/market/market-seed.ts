@@ -49,6 +49,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
     tagline: "Metal, pith and patina — forms cast and carved by hand",
     description:
       "Hand-formed sculpture traditions of India, from bell-metal Dhokra castings to the delicate carved reliefs of Shola pith.",
+    imageUrl: "/assets/market/cat-dhokra.jpg",
     subcategories: [
       {
         slug: "dhokra-art",
@@ -58,6 +59,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
         culturalInfo:
           "The earliest and most iconic evidence of this craft is the bronze “Dancing Girl” figurine recovered from Mohenjo-daro — lost-wax casting as practised by Dokra artisans today.\n\nThe term “Dokra” comes from the Dhokra Damar tribes, a traditional nomadic metalsmith community that originally lived in West Bengal and travelled across central and eastern India. As the tribes migrated over centuries, they settled in pockets across modern-day West Bengal, Odisha, Chhattisgarh, Jharkhand, Madhya Pradesh, and Telangana, passing down the secrets of the craft through generations.\n\nBecause the outer clay mould must be broken open to reveal the hardened metal piece, every mould is single-use — no two Dokra items can ever be identical.",
         youtubeUrl: "https://youtu.be/XOvusvnTO8Q",
+        imageUrl: "/assets/market/cat-dhokra.jpg",
         products: [
           {
             sku: "DHOKRA-001",
@@ -99,6 +101,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
         culturalInfo:
           "Sholapith does not have a single recorded moment of historical origin, but it is deeply woven into regional ritual and ceremonial life. Folklore credits the divine architect Vishwakarma — or Lord Shiva himself — with creating the first Sholapith craft to fashion pure white crowns (mukut) and garlands for the wedding of Shiva and Parvati.\n\nThe artisans who practise this craft are known as Malakars — literally “garland makers” — a title passed down through generations, tracing their community lineage back to these mythical origins.\n\nHistorically, Sholapith was reserved for sacred and auspicious occasions. It became indispensable for traditional Bengali wedding headgear like the groom’s topor and the bride’s mukut, and for delicate floral ornaments. The craft reached grand heights during community celebrations like Durga Puja, where artisans in districts like Murshidabad, Nadia, and Bardhaman created magnificent white backdrops known as sholar saj or daaker saaj.\n\nDuring the British Empire, the lightweight and heat-insulating qualities of shola pith gained global fame: it was used to manufacture the iconic “pith helmet” (shola topee) worn by travellers across tropical and subtropical regions of Asia and Africa.",
         youtubeUrl: "https://youtu.be/qcZR9lj3ic4",
+        imageUrl: "/assets/market/cat-shola.jpg",
         products: [
           {
             sku: "SHOLA-001",
@@ -140,6 +143,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
     tagline: "Cloth as storytelling — painted heritage you can wear",
     description:
       "Wearable heritage: garments and drapes made with hands, brushes and looms, carrying centuries of iconography.",
+    imageUrl: "/assets/market/cat-pattachitra.jpg",
     subcategories: [
       {
         slug: "pattachitra-saree",
@@ -149,6 +153,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
         culturalInfo:
           "Temple roots: the art form began around the 12th century AD in Odisha, closely linked to the worship of Lord Jagannath. Hereditary painters, known as Chitrakars, created devotional scroll paintings and ritual items for pilgrims.\n\nHeartland: the village of Raghurajpur in Odisha remains the main hub, where families pass down these specialized painting techniques through generations.\n\nDesigns feature mythological episodes from the Ramayana and Mahabharata, tales of Lord Krishna, and traditional motifs like the Tree of Life. Artists traditionally use organic, mineral, and vegetable dyes — predominantly red, yellow, indigo, white, and black — giving the fabric rich, long-lasting earth tones. Painting a single saree is a slow, meticulous process requiring fine brushwork, bold black outlines, and stylized figures with distinct rounded eyes and elaborate ornaments.",
         youtubeUrl: "https://youtu.be/AWwwK5_Jia4",
+        imageUrl: "/assets/market/cat-pattachitra.jpg",
         products: [
           {
             sku: "PATTA-001",

@@ -261,6 +261,7 @@ async function renderMarketLanding() {
           </div>
           <a class="link-btn" href="/market/${esc(c.slug)}" data-market-link>${esc(t('market_view_category'))} <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
         </div>
+        ${c.imageUrl ? `<img class="market-cat-banner" src="${esc(c.imageUrl)}" alt="${esc(c.name)}" loading="lazy">` : ''}
         <div class="market-sub-grid">
           ${c.subcategories.map((s) => marketSubCard(s, c.slug)).join('')}
         </div>
