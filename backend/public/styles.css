@@ -4387,3 +4387,7 @@ textarea.input { resize: vertical; padding-top: 10px; padding-bottom: 10px; line
 
 }
 
+
+/* Owner copy paragraphs on subcategory pages */
+.market-sub-desc p, .market-cultural-body p { margin: 0 0 10px; color: var(--ink-soft); font-size: 0.94rem; line-height: 1.65; max-width: 72ch; }
+.market-cultural-body p:last-child { margin-bottom: 0; }

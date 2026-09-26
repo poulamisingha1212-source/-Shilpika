@@ -9,13 +9,8 @@ import { Product, ProductStatus } from "../products/product.entity";
  * this file (names, descriptions, youtubeUrl, prices, product images) and the
  * catalog is upserted on every backend boot — no frontend changes required.
  *
- * TO REPLACE PLACEHOLDER CONTENT:
- *   • Product image  → set `imageUrl` to a path under /uploads or a public URL.
- *   • YouTube video  → set `youtubeUrl` to the video's watch/embed URL.
- *   • Prices         → edit `floorPrice` / `exportPrice` (INR, kept separate).
- *
- * NOTE: values below are SAMPLE content so the application runs end-to-end;
- * they are not final owner content.
+ * Product images live in backend/public/assets/market/ and are referenced by
+ * their /assets/market/… path.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 export interface MarketProductSeed {
@@ -51,7 +46,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
   {
     slug: "sculpture",
     name: "Sculpture",
-    tagline: "Metal, pith and patina — forms cast by hand",
+    tagline: "Metal, pith and patina — forms cast and carved by hand",
     description:
       "Hand-formed sculpture traditions of India, from bell-metal Dhokra castings to the delicate carved reliefs of Shola pith.",
     subcategories: [
@@ -59,37 +54,40 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
         slug: "dhokra-art",
         name: "Dhokra Art",
         description:
-          "Dhokra is a 4,000-year-old non-ferrous metal casting tradition using the lost-wax technique, practiced by artisan families across Chhattisgarh, West Bengal and Odisha. Every piece is cast in a one-time clay mould, so no two works are identical.",
+          "Dokra (or Dhokra) art is an ancient non-ferrous metal casting tradition that dates back over 4,000 years to the Indus Valley Civilization. Artisans build a clay core, wrap it in thin beeswax threads for intricate patterns, cover it in another layer of clay, melt out the wax, and pour molten brass or bell metal into the cavity — the same lost-wax (cire perdue) technique their ancestors used four millennia ago.",
         culturalInfo:
-          "Dhokra artisans descend from the Dokra Damar nomadic metal-smith communities. Work travels through generations: the wax model is built by hand over a clay core, encased, and molten bell metal replaces the wax — a craft recognised as a Geographical Indication in several regions.",
-        youtubeUrl: "",
+          "The earliest and most iconic evidence of this craft is the bronze “Dancing Girl” figurine recovered from Mohenjo-daro — lost-wax casting as practised by Dokra artisans today.\n\nThe term “Dokra” comes from the Dhokra Damar tribes, a traditional nomadic metalsmith community that originally lived in West Bengal and travelled across central and eastern India. As the tribes migrated over centuries, they settled in pockets across modern-day West Bengal, Odisha, Chhattisgarh, Jharkhand, Madhya Pradesh, and Telangana, passing down the secrets of the craft through generations.\n\nBecause the outer clay mould must be broken open to reveal the hardened metal piece, every mould is single-use — no two Dokra items can ever be identical.",
+        youtubeUrl: "https://youtu.be/XOvusvnTO8Q",
         products: [
           {
             sku: "DHOKRA-001",
-            name: "Dhokra Standing Elephant",
+            name: "Dhokra Elephant with Rider",
             description:
-              "Cast in solid bell metal with the classic coiled-wax texture, this standing elephant is a traditional symbol of strength and household blessing.",
+              "A solid bell-metal elephant cast in the classic Dhokra lost-wax tradition — crowned with a ritual finial, draped in hand-worked detail, and carrying a trident-bearing rider. A guardian piece for the home.",
             floorPrice: 2500,
             exportPrice: 4500,
             stock: 5,
+            imageUrl: "/assets/market/DHOKRA-001.jpg",
           },
           {
             sku: "DHOKRA-002",
-            name: "Dhokra Tribal Dancer Figurine",
+            name: "Dhokra Owl Figurine",
             description:
-              "A lost-wax casting of a tribal dancer mid-step, wrapped in the characteristic spiral filigree of Dhokra work.",
-            floorPrice: 3200,
-            exportPrice: 5800,
-            stock: 4,
-          },
-          {
-            sku: "DHOKRA-003",
-            name: "Dhokra Oil Lamp (Diya Stand)",
-            description:
-              "A ceremonial bell-metal lamp with ritual figurines around the rim, cast entirely by hand in the traditional Dhokra way.",
+              "The tribal owl of wisdom, cast in brass with the characteristic coiled-wax lattice of Dhokra work. Each casting is one of a kind — the mould is broken to release the metal.",
             floorPrice: 1800,
             exportPrice: 3400,
             stock: 6,
+            imageUrl: "/assets/market/DHOKRA-002.jpg",
+          },
+          {
+            sku: "DHOKRA-003",
+            name: "Dhokra Horse Pair",
+            description:
+              "A pair of cast brass horses in the Dhokra idiom — votive horses of the kind offered at village shrines across central India, standing on hand-drawn legs with patterned bodies.",
+            floorPrice: 3200,
+            exportPrice: 5800,
+            stock: 4,
+            imageUrl: "/assets/market/DHOKRA-003.jpg",
           },
         ],
       },
@@ -97,37 +95,40 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
         slug: "shola-pith-art",
         name: "Shola Pith Art",
         description:
-          "Shola pith — the light, cork-like core of the Aeschynomene aspera reed — is carved into impossibly fine sculptural relief. Bengal's artisans have shaped it for temple ritual and wedding ornament for centuries.",
+          "Sholapith is a traditional, eco-friendly craft from Eastern India — deeply rooted in the marshy wetlands of West Bengal, Assam, and Odisha — where artisans sculpt the milky-white, spongy core of the Aeschynomene aspera plant into delicate works of art. The pith is cut with a small knife into crisp, snow-white filigree that weighs almost nothing yet holds detail no other material can.",
         culturalInfo:
-          "Shola artists, called Malakars, traditionally supplied ritual headgear and temple decoration in Bengal. The reed pith is cut with a small knife into crisp, snow-white filigree that weighs almost nothing yet lasts generations when kept dry.",
-        youtubeUrl: "",
+          "Sholapith does not have a single recorded moment of historical origin, but it is deeply woven into regional ritual and ceremonial life. Folklore credits the divine architect Vishwakarma — or Lord Shiva himself — with creating the first Sholapith craft to fashion pure white crowns (mukut) and garlands for the wedding of Shiva and Parvati.\n\nThe artisans who practise this craft are known as Malakars — literally “garland makers” — a title passed down through generations, tracing their community lineage back to these mythical origins.\n\nHistorically, Sholapith was reserved for sacred and auspicious occasions. It became indispensable for traditional Bengali wedding headgear like the groom’s topor and the bride’s mukut, and for delicate floral ornaments. The craft reached grand heights during community celebrations like Durga Puja, where artisans in districts like Murshidabad, Nadia, and Bardhaman created magnificent white backdrops known as sholar saj or daaker saaj.\n\nDuring the British Empire, the lightweight and heat-insulating qualities of shola pith gained global fame: it was used to manufacture the iconic “pith helmet” (shola topee) worn by travellers across tropical and subtropical regions of Asia and Africa.",
+        youtubeUrl: "https://youtu.be/qcZR9lj3ic4",
         products: [
           {
             sku: "SHOLA-001",
-            name: "Shola Pith Temple Panel",
+            name: "Shola Pith Royal Elephant with Howdah",
             description:
-              "A hand-carved shola pith relief panel depicting a temple gateway, layered in fine white filigree detail.",
-            floorPrice: 1500,
-            exportPrice: 2900,
-            stock: 7,
+              "A milky-white shola pith elephant bearing a carved royal howdah — its canopy, rider and trappings all shaped by hand from the spongy reed core in fine ceremonial detail.",
+            floorPrice: 3200,
+            exportPrice: 5800,
+            stock: 5,
+            imageUrl: "/assets/market/SHOLA-001.jpg",
           },
           {
             sku: "SHOLA-002",
-            name: "Shola Pith Bridal Mukut (Crown)",
+            name: "Shola Pith Peacock Panel",
             description:
-              "The traditional Bengali wedding crown carved from shola reed, ornamented with delicate geometric openwork.",
-            floorPrice: 900,
-            exportPrice: 1800,
-            stock: 10,
+              "A peacock with a fully fanned tail rendered in layered white pith filigree on a deep ground — petals, plumage and scrolls each cut individually by the Malakar’s knife.",
+            floorPrice: 1500,
+            exportPrice: 2900,
+            stock: 7,
+            imageUrl: "/assets/market/SHOLA-002.jpg",
           },
           {
             sku: "SHOLA-003",
-            name: "Shola Pith Boat Procession",
+            name: "Shola Pith Durga Panel",
             description:
-              "A ceremonial boat procession carved entirely from shola pith — figures, oars and sails in miniature white relief.",
+              "Goddess Durga’s serene face framed in the layered crown-work of a shola pith tableau — the craft’s most devotional expression, presented in a protective display case.",
             floorPrice: 2200,
             exportPrice: 4100,
             stock: 5,
+            imageUrl: "/assets/market/SHOLA-003.png",
           },
         ],
       },
@@ -136,7 +137,7 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
   {
     slug: "outfits",
     name: "Outfits",
-    tagline: "Cloth as storytelling — woven and painted heritage",
+    tagline: "Cloth as storytelling — painted heritage you can wear",
     description:
       "Wearable heritage: garments and drapes made with hands, brushes and looms, carrying centuries of iconography.",
     subcategories: [
@@ -144,37 +145,40 @@ export const MARKET_CATALOG: MarketCategorySeed[] = [
         slug: "pattachitra-saree",
         name: "Pattachitra Saree",
         description:
-          "Pattachitra — literally 'cloth painting' — is the ancient narrative scroll art of Odisha and Bengal, now painted onto silk sarees. Mythological episodes, temple motifs and floral borders are hand-drawn with natural pigments.",
+          "Pattachitra sarees originate from a traditional 12th-century cloth-painting art form tied to the Jagannath Temple in Puri, Odisha, and parts of West Bengal. The word combines the Sanskrit terms “Patta” (cloth) and “Chitra” (picture) — a picture painted on cloth. Originally painted on standalone cloth canvases or palm leaves, the intricate storytelling art naturally transitioned onto handloom cotton and silk sarees as a wearable canvas.",
         culturalInfo:
-          "Pattachitra painters, the Chitrakars, follow iconographic canons laid down centuries ago; every saree carries scenes from epics like the Ramayana, framed by the craft's signature bold outlines and earthy red, black and yellow palette.",
-        youtubeUrl: "",
+          "Temple roots: the art form began around the 12th century AD in Odisha, closely linked to the worship of Lord Jagannath. Hereditary painters, known as Chitrakars, created devotional scroll paintings and ritual items for pilgrims.\n\nHeartland: the village of Raghurajpur in Odisha remains the main hub, where families pass down these specialized painting techniques through generations.\n\nDesigns feature mythological episodes from the Ramayana and Mahabharata, tales of Lord Krishna, and traditional motifs like the Tree of Life. Artists traditionally use organic, mineral, and vegetable dyes — predominantly red, yellow, indigo, white, and black — giving the fabric rich, long-lasting earth tones. Painting a single saree is a slow, meticulous process requiring fine brushwork, bold black outlines, and stylized figures with distinct rounded eyes and elaborate ornaments.",
+        youtubeUrl: "https://youtu.be/AWwwK5_Jia4",
         products: [
           {
             sku: "PATTA-001",
-            name: "Pattachitra Ramayana Silk Saree",
+            name: "Pattachitra Krishna Rasa Silk Saree",
             description:
-              "Hand-painted silk saree narrating a Ramayana episode in the classic Pattachitra palette, with hand-drawn temple borders.",
+              "Deep maroon silk hand-painted with a Krishna rasa procession — ceremonial umbrellas, dancers and villagers rendered in the craft’s natural red, green and gold palette with bold black outlines.",
             floorPrice: 6500,
             exportPrice: 11000,
             stock: 3,
+            imageUrl: "/assets/market/PATTA-001.png",
           },
           {
             sku: "PATTA-002",
-            name: "Pattachitra Lotus Motif Saree",
+            name: "Pattachitra Jagannath Boat Silk Saree",
             description:
-              "A pure silk drape painted with the signature Pattachitra lotus and elephant motifs — wearable scroll art.",
+              "A black silk canvas carrying the famous Pattachitra boat episode — the white swan-vessel, temple towers and costumed figures in brilliant natural pigment, framed by an ornate border.",
             floorPrice: 5200,
             exportPrice: 9200,
             stock: 4,
+            imageUrl: "/assets/market/PATTA-002.png",
           },
           {
             sku: "PATTA-003",
-            name: "Pattachitra Village Life Saree",
+            name: "Pattachitra Cow Herd Silk Saree",
             description:
-              "Everyday village scenes rendered in natural pigment on tussar silk — festival processions, paddy fields and ponds.",
+              "Krishna among the cows beneath flowering trees — a black-and-teal silk saree where every cow, tree and village figure is individually painted by hand in traditional mineral dyes.",
             floorPrice: 4800,
             exportPrice: 8600,
             stock: 5,
+            imageUrl: "/assets/market/PATTA-003.png",
           },
         ],
       },

@@ -125,6 +125,15 @@ function shortDesc(text, max = 120) {
   return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
 }
 
+// Render owner copy as real paragraphs (blank-line separated in the seed file).
+function marketParagraphs(text) {
+  if (!text) return '';
+  return String(text)
+    .split(/\n\s*\n/)
+    .map((para) => `<p>${esc(para.replace(/\n/g, ' ').trim())}</p>`)
+    .join('');
+}
+
 function parseYouTubeId(url) {
   if (!url) return null;
   const str = String(url).trim();
@@ -333,11 +342,11 @@ async function renderMarketSubcategoryPage(slug) {
     ${marketBreadcrumb([{ label: t('market_title'), href: '/market' }, { label: category ? category.name : '', href: catHref }, { label: subcategory.name }])}
     <header class="market-sub-hero">
       <h2>${esc(subcategory.name)}</h2>
-      <p>${esc(subcategory.description || '')}</p>
+      <div class="market-sub-desc">${marketParagraphs(subcategory.description)}</div>
       ${subcategory.culturalInfo ? `
         <div class="market-cultural">
           <h4><i class="ph-fill ph-seal-check" aria-hidden="true"></i> ${esc(t('market_cultural_title'))}</h4>
-          <p>${esc(subcategory.culturalInfo)}</p>
+          <div class="market-cultural-body">${marketParagraphs(subcategory.culturalInfo)}</div>
         </div>` : ''}
     </header>
 
