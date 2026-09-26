@@ -52,6 +52,26 @@ export class Product {
   @Column({ nullable: true, type: "text" })
   descriptionBengali: string;
 
+  /** Stable human-readable catalog ID (e.g. DHOKRA-001) used in shareable URLs. */
+  @Column({ nullable: true, unique: true })
+  sku: string;
+
+  /** Structured market placement: set for curated market catalog products. */
+  @Column({ nullable: true })
+  subcategoryId: string;
+
+  /** Minimum/local selling price. Never merged with exportPrice. */
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  floorPrice: number;
+
+  /** Export-market price. Never merged with floorPrice. */
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  exportPrice: number;
+
+  /** Units available; null means stock is not tracked for this listing. */
+  @Column({ type: "int", nullable: true })
+  stock: number;
+
   @Column({ nullable: true })
   category: string;
 

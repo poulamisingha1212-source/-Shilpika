@@ -13,6 +13,8 @@ import { MediaModule } from './media/media.module';
 import { AiModule } from './ai/ai.module';
 import { PricingModule } from './pricing/pricing.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
+import { MarketModule } from './market/market.module';
+import { OrdersModule } from './orders/orders.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AuctionsModule } from './auctions/auctions.module';
@@ -107,6 +109,8 @@ import { createDatabaseSource, APP_ENTITIES } from './database/database.helper';
     AiModule,
     PricingModule,
     MarketplaceModule,
+    MarketModule,
+    OrdersModule,
     InquiriesModule,
     AnalyticsModule,
     AuctionsModule,

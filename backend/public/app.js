@@ -61,12 +61,7 @@ const state = {
   currentProductId: null,
   currentCosts: { material: 0, labor: 0, transport: 0, margin: 25 },
   recommendedPrice: { floor: 0, b2c: 0, b2b: 0 },
-  marketplaceProducts: [],
-  feedLoaded: false,
   selectedProductDetail: null,
-  searchQuery: '',
-  selectedCategory: 'all',
-  sortBy: 'newest',
   wishlist: new Set(JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]')),
   voiceCloneReady: false,
   mediaRecorder: null,
@@ -202,6 +197,74 @@ const I18N = {
     product_video_title: 'Craft Video Demonstration',
     artisan_showcase: 'Artisan Showcase',
     copy_product_link: 'Copy product link',
+    // ── Market ──
+    market_title: 'Shilpika Market',
+    market_intro: 'A premium marketplace for India’s living craft traditions — every piece handmade, verified, and priced fairly for local and export buyers.',
+    market_view_category: 'View category',
+    market_explore: 'Explore',
+    market_available_products: 'Available products',
+    market_cultural_title: 'Cultural provenance',
+    market_image_placeholder: 'Image coming soon',
+    market_video_pending: 'Craft film coming soon',
+    market_video_pending_hint: 'The demonstration video for this craft will appear here.',
+    market_loading: 'Loading…',
+    market_load_error_title: 'Something went wrong',
+    market_load_error: 'Unable to load the market right now. Please try again.',
+    market_retry: 'Try again',
+    market_back: 'Back to market',
+    market_not_found_title: 'Not found',
+    market_not_found_hint: 'That category or craft does not exist. Explore the market instead.',
+    market_product_not_found: 'Product not found',
+    market_product_not_found_hint: 'This piece may have been removed, or the link is incomplete.',
+    market_empty_hint: 'New pieces are being curated. Please check back soon.',
+    market_pricing_title: 'Pricing',
+    floor_price: 'Floor price',
+    export_price: 'Export price',
+    floor_price_note: 'Local / minimum selling price',
+    export_price_note: 'Export-market price',
+    price_type_label: 'Choose price type',
+    quantity_label: 'Quantity',
+    estimated_total: 'Estimated total',
+    product_id_label: 'Product ID',
+    in_stock: 'In stock',
+    out_of_stock: 'Out of stock',
+    stock_limit: 'That quantity exceeds available stock.',
+    market_price_missing: 'This price type is not available for this piece.',
+    view_details: 'View details',
+    add_to_cart: 'Add to cart',
+    place_order: 'Place order',
+    share_product: 'Share',
+    added_to_cart: 'Added to your cart.',
+    market_link_copied: 'Product link copied — paste it anywhere to share.',
+    copy_failed: 'Could not copy the link. Please copy it from the address bar.',
+    signin_required: 'Please sign in to place your order.',
+    order_placed_title: 'Order placed:',
+    order_placed_toast: 'Your order has been placed!',
+    order_failed: 'Could not place the order. Please try again.',
+    cart_order_failed: 'Some items could not be ordered:',
+    cart_title: 'Your cart',
+    cart_empty: 'Your cart is empty — the market is full of handcrafted pieces waiting for you.',
+    cart_total: 'Order total',
+    cart_total_hint: 'Prices are confirmed server-side when the order is placed.',
+    cart_place_order: 'Place order',
+    cart_remove: 'Remove from cart',
+    voice_enquiry: 'Voice enquiry',
+    voice_enquiry_hint: 'Ask about price, availability or the craft itself — answered from live product data only.',
+    ask_by_voice: 'Ask by voice',
+    stop_recording: 'Listening… tap to stop',
+    voice_listening: 'Listening… ask your question.',
+    voice_permission: 'Microphone permission was denied. You can type your question instead.',
+    voice_unsupported: 'Voice input is not supported in this browser. Please type your question.',
+    voice_error: 'Could not start the microphone. Please try again or type your question.',
+    voice_too_short: 'That was too short — hold the button and ask your question.',
+    enquiry_thinking: 'Checking the product details…',
+    enquiry_failed: 'Unable to answer right now. Please try again.',
+    enquiry_send: 'Ask',
+    enquiry_text_label: 'Type your question',
+    enquiry_text_hint: 'Or type your question…',
+    enquiry_replay: 'Play answer',
+    enquiry_you_asked: 'You asked:',
+    enquiry_voice_question: '(voice question)',
   },
   hi: {
     brand_sub: 'स्वर-प्रथम, एआई-आधारित शिल्प वाणिज्य · सांस्कृतिक प्रमाणिकता',
@@ -320,6 +383,74 @@ const I18N = {
     product_video_title: 'कारीगरी वीडियो प्रदर्शन',
     artisan_showcase: 'कारीगर प्रदर्शन',
     copy_product_link: 'उत्पाद लिंक कॉपी करें',
+    // ── Market ──
+    market_title: 'शिल्पिका मार्केट',
+    market_intro: 'भारत की जीवंत शिल्प परंपराओं का प्रीमियम बाज़ार — हर वस्तु हाथ से निर्मित, सत्यापित, और स्थानीय व निर्यात खरीदारों के लिए उचित मूल्य पर।',
+    market_view_category: 'श्रेणी देखें',
+    market_explore: 'देखें',
+    market_available_products: 'उपलब्ध उत्पाद',
+    market_cultural_title: 'सांस्कृतिक प्रमाणिकता',
+    market_image_placeholder: 'फोटो जल्द आ रही है',
+    market_video_pending: 'शिल्प वीडियो जल्द आ रहा है',
+    market_video_pending_hint: 'इस शिल्प का प्रदर्शन वीडियो यहाँ दिखाया जाएगा।',
+    market_loading: 'लोड हो रहा है…',
+    market_load_error_title: 'कुछ गड़बड़ हो गई',
+    market_load_error: 'मार्केट अभी लोड नहीं हो सका। कृपया फिर कोशिश करें।',
+    market_retry: 'फिर कोशिश करें',
+    market_back: 'मार्केट पर वापस',
+    market_not_found_title: 'नहीं मिला',
+    market_not_found_hint: 'यह श्रेणी या शिल्प मौजूद नहीं है। मार्केट देखें।',
+    market_product_not_found: 'उत्पाद नहीं मिला',
+    market_product_not_found_hint: 'यह वस्तु हटाई जा चुकी है या लिंक अधूरा है।',
+    market_empty_hint: 'नई वस्तुओं की क्यूरेशन चल रही है। कृपया थोड़ी देर बाद देखें।',
+    market_pricing_title: 'मूल्य',
+    floor_price: 'फ़्लोर मूल्य',
+    export_price: 'निर्यात मूल्य',
+    floor_price_note: 'स्थानीय / न्यूनतम बिक्री मूल्य',
+    export_price_note: 'निर्यात बाज़ार मूल्य',
+    price_type_label: 'मूल्य प्रकार चुनें',
+    quantity_label: 'मात्रा',
+    estimated_total: 'अनुमानित कुल',
+    product_id_label: 'उत्पाद आईडी',
+    in_stock: 'स्टॉक में',
+    out_of_stock: 'स्टॉक समाप्त',
+    stock_limit: 'यह मात्रा उपलब्ध स्टॉक से अधिक है।',
+    market_price_missing: 'यह मूल्य प्रकार इस वस्तु के लिए उपलब्ध नहीं है।',
+    view_details: 'विवरण देखें',
+    add_to_cart: 'कार्ट में डालें',
+    place_order: 'ऑर्डर करें',
+    share_product: 'शेयर',
+    added_to_cart: 'आपकी कार्ट में जोड़ा गया।',
+    market_link_copied: 'उत्पाद लिंक कॉपी हो गया — कहीं भी पेस्ट करके साझा करें।',
+    copy_failed: 'लिंक कॉपी नहीं हो सका। कृपया एड्रेस बार से कॉपी करें।',
+    signin_required: 'ऑर्डर देने के लिए कृपया साइन इन करें।',
+    order_placed_title: 'ऑर्डर हो गया:',
+    order_placed_toast: 'आपका ऑर्डर दर्ज हो गया!',
+    order_failed: 'ऑर्डर दर्ज नहीं हो सका। कृपया फिर कोशिश करें।',
+    cart_order_failed: 'कुछ वस्तुएँ ऑर्डर नहीं हो सकीं:',
+    cart_title: 'आपकी कार्ट',
+    cart_empty: 'आपकी कार्ट खाली है — बाज़ार में हस्तनिर्मित वस्तुएँ आपकी प्रतीक्षा में हैं।',
+    cart_total: 'कुल राशि',
+    cart_total_hint: 'ऑर्डर देते समय मूल्य सर्वर द्वारा पुष्ट किए जाते हैं।',
+    cart_place_order: 'ऑर्डर करें',
+    cart_remove: 'कार्ट से हटाएँ',
+    voice_enquiry: 'आवाज़ पूछताछ',
+    voice_enquiry_hint: 'मूल्य, उपलब्धता या शिल्प के बारे में पूछें — उत्तर केवल लाइव उत्पाद डेटा से।',
+    ask_by_voice: 'आवाज़ से पूछें',
+    stop_recording: 'सुन रहे हैं… रोकने के लिए दबाएँ',
+    voice_listening: 'सुन रहे हैं… अपना प्रश्न पूछें।',
+    voice_permission: 'माइक की अनुमति नहीं मिली। आप प्रश्न टाइप कर सकते हैं।',
+    voice_unsupported: 'इस ब्राउज़र में आवाज़ इनपुट उपलब्ध नहीं है। कृपया प्रश्न टाइप करें।',
+    voice_error: 'माइक शुरू नहीं हो सका। कृपया फिर कोशिश करें या प्रश्न टाइप करें।',
+    voice_too_short: 'बहुत छोटा था — बटन दबाकर अपना प्रश्न पूछें।',
+    enquiry_thinking: 'उत्पाद विवरण जाँच रहे हैं…',
+    enquiry_failed: 'अभी उत्तर नहीं मिल सका। कृपया फिर कोशिश करें।',
+    enquiry_send: 'पूछें',
+    enquiry_text_label: 'अपना प्रश्न टाइप करें',
+    enquiry_text_hint: 'या अपना प्रश्न टाइप करें…',
+    enquiry_replay: 'उत्तर चलाएँ',
+    enquiry_you_asked: 'आपने पूछा:',
+    enquiry_voice_question: '(आवाज़ प्रश्न)',
   },
   bn: {
     brand_sub: 'কণ্ঠস্বর-প্রথম, এআই-চালিত কারুশিল্প বাণিজ্য · সাংস্কৃতিক উৎস ও সত্যতা',
@@ -438,6 +569,74 @@ const I18N = {
     product_video_title: 'হস্তশিল্প ভিডিও প্রদর্শন',
     artisan_showcase: 'কারিগর প্রদর্শনী',
     copy_product_link: 'প্রোডাক্টের লিংক কপি করুন',
+    // ── Market ──
+    market_title: 'শিল্পিকা মার্কেট',
+    market_intro: 'ভারতের জীবন্ত কারুশিল্প ঐতিহ্যের প্রিমিয়াম বাজার — প্রতিটি নিদর্শন হাতে তৈরি, যাচাইকৃত এবং স্থানীয় ও রপ্তানি ক্রেতাদের জন্য ন্যায্য মূল্যে।',
+    market_view_category: 'ক্যাটাগরি দেখুন',
+    market_explore: 'দেখুন',
+    market_available_products: 'উপলব্ধ পণ্য',
+    market_cultural_title: 'সাংস্কৃতিক উৎস',
+    market_image_placeholder: 'ছবি শীঘ্রই আসছে',
+    market_video_pending: 'শিল্প ভিডিও শীঘ্রই আসছে',
+    market_video_pending_hint: 'এই শিল্পের প্রদর্শনী ভিডিও এখানে দেখানো হবে।',
+    market_loading: 'লোড হচ্ছে…',
+    market_load_error_title: 'কিছু একটা ভুল হয়েছে',
+    market_load_error: 'মার্কেট এখন লোড করা যাচ্ছে না। আবার চেষ্টা করুন।',
+    market_retry: 'আবার চেষ্টা করুন',
+    market_back: 'মার্কেটে ফিরে যান',
+    market_not_found_title: 'খুঁজে পাওয়া যায়নি',
+    market_not_found_hint: 'এই ক্যাটাগরি বা শিল্প নেই। মার্কেট ঘুরে দেখুন।',
+    market_product_not_found: 'পণ্য খুঁজে পাওয়া যায়নি',
+    market_product_not_found_hint: 'এই নিদর্শনটি সরানো হয়ে থাকতে পারে, বা লিংকটি অসম্পূর্ণ।',
+    market_empty_hint: 'নতুন নিদর্শন নির্বাচন করা হচ্ছে। কিছুক্ষণ পরে আবার দেখুন।',
+    market_pricing_title: 'মূল্য',
+    floor_price: 'ফ্লোর মূল্য',
+    export_price: 'রপ্তানি মূল্য',
+    floor_price_note: 'স্থানীয় / সর্বনিম্ন বিক্রয় মূল্য',
+    export_price_note: 'রপ্তানি বাজার মূল্য',
+    price_type_label: 'মূল্যের ধরন বেছে নিন',
+    quantity_label: 'পরিমাণ',
+    estimated_total: 'আনুমানিক মোট',
+    product_id_label: 'পণ্য আইডি',
+    in_stock: 'স্টকে আছে',
+    out_of_stock: 'স্টক শেষ',
+    stock_limit: 'এই পরিমাণ উপলব্ধ স্টকের চেয়ে বেশি।',
+    market_price_missing: 'এই মূল্যের ধরনটি এই নিদর্শনের জন্য নেই।',
+    view_details: 'বিস্তারিত দেখুন',
+    add_to_cart: 'কার্টে যোগ করুন',
+    place_order: 'অর্ডার করুন',
+    share_product: 'শেয়ার',
+    added_to_cart: 'আপনার কার্টে যোগ হয়েছে।',
+    market_link_copied: 'পণ্যের লিংক কপি হয়েছে — যেকোনো জায়গায় পেস্ট করে শেয়ার করুন।',
+    copy_failed: 'লিংক কপি করা গেল না। ঠিকানা বার থেকে কপি করুন।',
+    signin_required: 'অর্ডার দিতে অনুগ্রহ করে সাইন ইন করুন।',
+    order_placed_title: 'অর্ডার হয়েছে:',
+    order_placed_toast: 'আপনার অর্ডার নথিভুক্ত হয়েছে!',
+    order_failed: 'অর্ডার নথিভুক্ত করা গেল না। আবার চেষ্টা করুন।',
+    cart_order_failed: 'কিছু পণ্য অর্ডার হয়নি:',
+    cart_title: 'আপনার কার্ট',
+    cart_empty: 'আপনার কার্ট খালি — বাজারে হাতে তৈরি নিদর্শনগুলো অপেক্ষা করছে।',
+    cart_total: 'মোট মূল্য',
+    cart_total_hint: 'অর্ডার দেওয়ার সময় মূল্য সার্ভার থেকে নিশ্চিত করা হয়।',
+    cart_place_order: 'অর্ডার করুন',
+    cart_remove: 'কার্ট থেকে সরান',
+    voice_enquiry: 'ভয়েস জিজ্ঞাসা',
+    voice_enquiry_hint: 'মূল্য, প্রাপ্যতা বা শিল্প সম্পর্কে জিজ্ঞাসা করুন — উত্তর আসে শুধুমাত্র লাইভ পণ্য তথ্য থেকে।',
+    ask_by_voice: 'কণ্ঠে জিজ্ঞাসা করুন',
+    stop_recording: 'শুনছি… থামাতে চাপুন',
+    voice_listening: 'শুনছি… আপনার প্রশ্ন করুন।',
+    voice_permission: 'মাইক্রোফোনের অনুমতি দেওয়া হয়নি। আপনি প্রশ্ন লিখতে পারেন।',
+    voice_unsupported: 'এই ব্রাউজারে ভয়েস ইনপুট সমর্থিত নয়। অনুগ্রহ করে প্রশ্ন লিখুন।',
+    voice_error: 'মাইক্রোফোন চালু করা গেল না। আবার চেষ্টা করুন বা প্রশ্ন লিখুন।',
+    voice_too_short: 'খুব ছোট হয়ে গেল — বোতাম চেপে ধরে প্রশ্ন করুন।',
+    enquiry_thinking: 'পণ্যের তথ্য দেখা হচ্ছে…',
+    enquiry_failed: 'এখন উত্তর দেওয়া গেল না। আবার চেষ্টা করুন।',
+    enquiry_send: 'জিজ্ঞাসা',
+    enquiry_text_label: 'আপনার প্রশ্ন লিখুন',
+    enquiry_text_hint: 'বা আপনার প্রশ্ন লিখুন…',
+    enquiry_replay: 'উত্তর শুনুন',
+    enquiry_you_asked: 'আপনি জিজ্ঞাসা করেছেন:',
+    enquiry_voice_question: '(ভয়েস প্রশ্ন)',
   },
 };
 
@@ -538,10 +737,8 @@ function setLanguage(lang, notify = false) {
     switchBtn.textContent = isSignup ? (t('tab_signin') || 'Sign In') : (t('tab_signup') || 'Sign Up');
   }
 
-  // Re-render product listings so the bilingual subtitle follows the new language
-  if ($('marketplace-grid') && $('results-count')) {
-    renderMarketplaceProducts(getVisibleProducts());
-  }
+  // Re-render the market so bilingual subtitles follow the new language
+  if (state.currentView === 'marketplace-view') renderMarketRoute();
 
   if (notify) {
     showToast(t('lang_changed'), 'info');
@@ -597,7 +794,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindWizardControls();
   bindBeforeAfterSlider();
   bindVoiceControls();
-  bindMarketplaceControls();
   bindModalControls();
   bindAuctionControls();
   bindSaathiControls();
@@ -1026,6 +1222,10 @@ async function initSession() {
     }
     saveSession(session);
     enterApp();
+  } else if (isMarketPath(window.location.pathname)) {
+    // Deep link into the Market (e.g. a shared product URL): guests may browse;
+    // sign-in is requested when adding to cart or placing an order.
+    enterApp();
   } else {
     $('login-overlay').hidden = false;
     $('app-main-container').style.visibility = 'hidden';
@@ -1037,6 +1237,8 @@ function enterApp() {
   $('login-overlay').hidden = true;
   $('app-main-container').style.visibility = '';
   applyUserToUi();
+  // A deep link into the Market wins over the role's default dashboard.
+  if (isMarketPath(window.location.pathname)) showView('marketplace-view');
   checkApiHealth();
 }
 
@@ -1209,6 +1411,9 @@ function renderSidebarNav(role) {
 
       if (item.action === 'startAddProduct') {
         startAddProduct();
+      } else if (item.viewId === 'marketplace-view') {
+        // The Market is a routed area — always enter at the landing page.
+        navigateMarket('/market');
       } else if (item.viewId) {
         showView(item.viewId);
       }
@@ -1233,6 +1438,9 @@ function applyUserToUi() {
     const isAuth0 = !!(state.user?.isAuth0 || state.user?.auth0Id?.startsWith('auth0|'));
     $('sidebar-auth0-tag').hidden = !isAuth0;
   }
+
+  const signinBtn = $('topbar-signin');
+  if (signinBtn) signinBtn.hidden = !!state.user;
 
   const config = PORTAL_CONFIG[role] || PORTAL_CONFIG.buyer;
   const portalName = config.portalNameKey ? t(config.portalNameKey) : config.portalName;
@@ -1333,7 +1541,7 @@ function showView(id) {
   });
 
   try {
-    if (id === 'marketplace-view') loadMarketplaceFeed();
+    if (id === 'marketplace-view') renderMarketRoute();
     if (id === 'auction-view') startAuctionTicker();
     if (id === 'admin-analytics-view') renderAdminView();
     if (id === 'artisan-dashboard-view') loadArtisanDashboard();
@@ -1426,202 +1634,11 @@ function renderRecentProducts(products) {
   });
 }
 
-// ---------------------------------------------------------------------------
-// Marketplace feed
-// ---------------------------------------------------------------------------
-function bindMarketplaceControls() {
-  const search = $('marketplace-search');
-  let debounce;
-  search.addEventListener('input', () => {
-    $('search-clear-btn').hidden = search.value.length === 0;
-    clearTimeout(debounce);
-    debounce = setTimeout(() => {
-      state.searchQuery = search.value.trim();
-      loadMarketplaceFeed();
-    }, 300);
-  });
-
-  $('search-clear-btn').addEventListener('click', () => {
-    search.value = '';
-    state.searchQuery = '';
-    $('search-clear-btn').hidden = true;
-    loadMarketplaceFeed();
-    search.focus();
-  });
-
-  $('marketplace-sort').addEventListener('change', (e) => {
-    state.sortBy = e.target.value;
-    renderMarketplaceProducts(getVisibleProducts());
-  });
-
-  document.querySelectorAll('.cat-chip').forEach((chip) => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.cat-chip').forEach((c) => c.classList.remove('active'));
-      chip.classList.add('active');
-      state.selectedCategory = chip.dataset.category;
-      loadMarketplaceFeed();
-    });
-  });
-
-  $('clear-filters-btn').addEventListener('click', () => {
-    state.searchQuery = '';
-    state.selectedCategory = 'all';
-    search.value = '';
-    $('search-clear-btn').hidden = true;
-    document.querySelectorAll('.cat-chip').forEach((c) => c.classList.toggle('active', c.dataset.category === 'all'));
-    loadMarketplaceFeed();
-  });
-}
-
-async function loadMarketplaceFeed() {
-  const grid = $('marketplace-grid');
-  grid.innerHTML = Array.from({ length: 6 }, skeletonCard).join('');
-
-  try {
-    let url = `${API_BASE}/marketplace/feed?page=1&limit=50`;
-    if (state.selectedCategory !== 'all') url += `&category=${encodeURIComponent(state.selectedCategory)}`;
-    if (state.searchQuery) url += `&q=${encodeURIComponent(state.searchQuery)}`;
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('feed');
-    const result = await res.json();
-    // Map the joined artisan for display
-    state.marketplaceProducts = (result.data || []).map((p) => ({
-      ...p,
-      artisanName: (p.artisan && p.artisan.displayName) || p.artisanName || 'Unknown artisan',
-    }));
-    state.feedLoaded = true;
-  } catch {
-    if (!state.feedLoaded) {
-      state.marketplaceProducts = [];
-      state.feedLoaded = true;
-      showToast('Could not load the marketplace — check that the server is running.', 'error');
-    }
-  }
-
-  updateCategoryChipCounts();
-  renderMarketplaceProducts(getVisibleProducts());
-}
-
 // Second-line product name follows the selected UI language (en → English only, hi → Hindi, bn → Bengali)
 function productSubTitle(p) {
   if (state.currentLang === 'bn') return p.titleBengali || '';
   if (state.currentLang === 'hi') return p.titleHindi || '';
   return '';
-}
-
-function getVisibleProducts() {
-  let list = [...state.marketplaceProducts];
-  if (state.selectedCategory !== 'all') {
-    const cat = state.selectedCategory.toLowerCase();
-    list = list.filter((p) => (p.category || '').toLowerCase().includes(cat));
-  }
-  if (state.searchQuery) {
-    const q = state.searchQuery.toLowerCase();
-    list = list.filter((p) =>
-      [p.title, p.titleHindi, p.titleBengali, p.craft, p.region, p.category].some((f) => (f || '').toLowerCase().includes(q)));
-  }
-  switch (state.sortBy) {
-    case 'price-asc': list.sort((a, b) => (a.priceMin || 0) - (b.priceMin || 0)); break;
-    case 'price-desc': list.sort((a, b) => (b.priceMax || 0) - (a.priceMax || 0)); break;
-    case 'popular': list.sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)); break;
-    default: break;
-  }
-  return list;
-}
-
-function renderMarketplaceProducts(products) {
-  const grid = $('marketplace-grid');
-  const hasFilters = state.selectedCategory !== 'all' || !!state.searchQuery;
-
-  $('results-count').textContent = `${products.length} handcrafted ${products.length === 1 ? 'piece' : 'pieces'}`;
-  $('clear-filters-btn').hidden = !hasFilters;
-
-  if (!products.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
-        <h4>No crafts match your search</h4>
-        <p>Try a different keyword or explore another category of handmade work.</p>
-        <button class="btn-ghost" type="button" onclick="document.getElementById('clear-filters-btn').click()">
-          <i class="ph ph-broom"></i> Clear filters
-        </button>
-      </div>`;
-    return;
-  }
-
-  grid.innerHTML = products.map((p) => {
-    const saved = state.wishlist.has(p.id);
-    const sub = productSubTitle(p);
-    return `
-      <article class="product-card" data-product="${esc(p.id)}" tabindex="0" role="button" aria-label="${esc(p.title)}">
-        <div class="product-media">
-          <img src="${esc(p.thumbnailUrl || '')}" alt="${esc(p.title)}" loading="lazy"
-               onerror="this.classList.add('img-missing')">
-          <span class="region-badge"><i class="ph ph-map-pin" aria-hidden="true"></i> ${esc(p.region || 'India')}</span>
-          <button class="wish-btn ${saved ? 'saved' : ''}" data-wish="${esc(p.id)}" type="button"
-                  aria-pressed="${saved}" aria-label="${saved ? 'Remove from' : 'Save to'} wishlist">
-            <i class="ph${saved ? '-fill' : ''} ph-heart" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="product-body">
-          <div>
-            <div class="product-title">${esc(p.title)}</div>
-            ${sub ? `<div class="product-hindi">${esc(sub)}</div>` : ''}
-          </div>
-          <div class="product-artisan">
-            <span class="artisan-avatar" aria-hidden="true">${initials(p.artisanName || '—')}</span>
-            ${esc(p.artisanName || 'Independent artisan')}
-            <span class="provenance-mini" title="Cultural provenance verified"><i class="ph-fill ph-seal-check" aria-hidden="true"></i></span>
-          </div>
-          <div class="product-foot">
-            <span class="product-price">${p.priceMax || p.priceMin ? `₹${formatNum(p.priceMax || p.priceMin)}` : 'Price on request'}</span>
-            <span class="product-views"><i class="ph ph-eye" aria-hidden="true"></i> ${formatNum(p.viewCount || 0)}</span>
-          </div>
-        </div>
-      </article>`;
-  }).join('');
-
-  bindProductCards(grid);
-}
-
-function bindProductCards(scope) {
-  scope.querySelectorAll('[data-product]').forEach((card) => {
-    card.addEventListener('click', () => openProductModal(card.dataset.product));
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProductModal(card.dataset.product); }
-    });
-  });
-  scope.querySelectorAll('[data-wish]').forEach((btn) => {
-    btn.addEventListener('click', (e) => { e.stopPropagation(); toggleWishlist(btn.dataset.wish); });
-  });
-}
-
-function skeletonCard() {
-  return `
-    <div class="skeleton" aria-hidden="true">
-      <div class="skeleton-thumb"></div>
-      <div class="skeleton-body">
-        <div class="skeleton-line w60"></div>
-        <div class="skeleton-line w40"></div>
-      </div>
-    </div>`;
-}
-
-function updateCategoryChipCounts() {
-  document.querySelectorAll('.cat-chip[data-category]').forEach((chip) => {
-    const cat = chip.dataset.category;
-    const count = cat === 'all'
-      ? state.marketplaceProducts.length
-      : state.marketplaceProducts.filter((p) => (p.category || '').toLowerCase().includes(cat.toLowerCase())).length;
-    let badge = chip.querySelector('.cat-count');
-    if (!badge) {
-      badge = document.createElement('span');
-      badge.className = 'cat-count';
-      chip.appendChild(badge);
-    }
-    badge.textContent = count;
-  });
 }
 
 // ---------------------------------------------------------------------------
@@ -1731,9 +1748,13 @@ function productTiers(p) {
   return { floor, b2c, b2b };
 }
 
-function openProductModal(productId) {
-  const product = state.marketplaceProducts.find((p) => p.id === productId);
-  if (!product) return;
+async function openProductModal(productId) {
+  let product = null;
+  try {
+    const res = await fetch(`${API_BASE}/products/${productId}`);
+    if (res.ok) product = await res.json();
+  } catch { /* handled below */ }
+  if (!product) { showToast('Could not load that product.', 'error'); return; }
 
   state.selectedProductDetail = product;
   const saved = state.wishlist.has(product.id);
@@ -3213,13 +3234,11 @@ async function publishProductNow() {
     : `🎉 "${payload.title}" published in demo mode!`, 'success');
   speakAloud('बधाई हो! आपका उत्पाद बाज़ार में प्रकाशित हो गया है।');
 
-  state.feedLoaded = false;
-  await loadMarketplaceFeed();
   if (state.user?.role === 'artisan') {
     await loadArtisanDashboard();
     showView('artisan-dashboard-view');
   } else {
-    showView('marketplace-view');
+    navigateMarket('/market');
   }
 }
 
@@ -3236,6 +3255,7 @@ async function renderAdminView() {
   };
 
   let filled = false;
+  let feedProducts = [];
   try {
     const res = await fetch(`${API_BASE}/analytics/admin`, {
       headers: { Authorization: `Bearer ${state.authToken || ''}` },
@@ -3248,18 +3268,19 @@ async function renderAdminView() {
     }
   } catch { /* fall through to feed-derived stats */ }
 
-  if (!state.feedLoaded) await loadMarketplaceFeed();
-
   if (!filled) {
-    const products = state.marketplaceProducts;
-    const avg = products.length
-      ? Math.round(products.reduce((s, p) => s + ((p.priceMin || 0) + (p.priceMax || 0)) / 2, 0) / products.length)
+    try {
+      const res = await fetch(`${API_BASE}/marketplace/feed?page=1&limit=50`);
+      if (res.ok) feedProducts = (await res.json()).data || [];
+    } catch { /* empty fallback below */ }
+    const avg = feedProducts.length
+      ? Math.round(feedProducts.reduce((s, p) => s + ((p.priceMin || 0) + (p.priceMax || 0)) / 2, 0) / feedProducts.length)
       : 0;
-    setStats(5, products.length, products.reduce((s, p) => s + (p.inquiryCount || 0), 0), avg, '100%');
+    setStats(5, feedProducts.length, feedProducts.reduce((s, p) => s + (p.inquiryCount || 0), 0), avg, '100%');
   }
 
   const counts = {};
-  state.marketplaceProducts.forEach((p) => {
+  feedProducts.forEach((p) => {
     const cat = p.category || 'Other';
     counts[cat] = (counts[cat] || 0) + 1;
   });

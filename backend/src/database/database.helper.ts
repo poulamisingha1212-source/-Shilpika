@@ -61,6 +61,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { User, UserRole } from '../users/user.entity';
 import { ArtisanProfile } from '../users/artisan-profile.entity';
 import { Product, ProductStatus } from '../products/product.entity';
+import { MarketCategory } from '../market/market-category.entity';
+import { MarketSubcategory } from '../market/market-subcategory.entity';
+import { Order } from '../orders/order.entity';
+import { seedMarketCatalog } from '../market/market-seed';
 import { Inquiry } from '../inquiries/inquiry.entity';
 import { MarketObservation } from '../pricing/market-observation.entity';
 import { PriceRecommendation } from '../pricing/price-recommendation.entity';
@@ -75,6 +79,9 @@ export const APP_ENTITIES = [
   User,
   ArtisanProfile,
   Product,
+  MarketCategory,
+  MarketSubcategory,
+  Order,
   Inquiry,
   MarketObservation,
   PriceRecommendation,
@@ -227,6 +234,7 @@ export async function createDatabaseSource(options: DataSourceOptions): Promise<
       console.log('✅ Connected to external PostgreSQL database (Timescale / Cloud)');
       await seedIfEmpty(ds);
       await backfillBengaliTitles(ds);
+      await seedMarketCatalog(ds);
       return ds;
     } catch (err: any) {
       console.warn(`[Database] PostgreSQL connection failed (${err.message || 'connection refused'}). Falling back to in-memory PostgreSQL emulator.`);
@@ -264,5 +272,6 @@ export async function createDatabaseSource(options: DataSourceOptions): Promise<
 
   await memDs.initialize();
   await seedInMemoryDb(memDs);
+  await seedMarketCatalog(memDs);
   return memDs;
 }

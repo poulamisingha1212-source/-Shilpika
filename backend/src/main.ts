@@ -51,6 +51,15 @@ async function bootstrap() {
   }
   app.use('/uploads', express.static(uploadsDir));
 
+  // SPA fallback: deep links like /market/product/DHOKRA-001 must resolve to
+  // index.html on refresh, direct opens, and shared links (WhatsApp, email…).
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(publicDir, 'index.html'));
+  });
+
   // Global prefix for API
   app.setGlobalPrefix('api/v1');
 

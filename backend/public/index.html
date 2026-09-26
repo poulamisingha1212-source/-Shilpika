@@ -279,6 +279,13 @@
           </div>
         </div>
         <div class="topbar-right">
+          <button class="topbar-signin-btn" id="topbar-signin" type="button" hidden>
+            <i class="ph-bold ph-sign-in" aria-hidden="true"></i> Sign in
+          </button>
+          <button class="cart-toggle-btn" id="cart-toggle-btn" type="button" aria-label="Open cart" aria-haspopup="dialog">
+            <i class="ph-bold ph-shopping-cart-simple" aria-hidden="true"></i>
+            <span class="cart-badge" id="cart-badge" hidden aria-live="polite">0</span>
+          </button>
           <div class="lang-selector-wrap" id="lang-selector-wrap" title="Switch Language / ভাষা পরিবর্তন / भाषा बदलें">
             <i class="ph-bold ph-globe" aria-hidden="true"></i>
             <select id="lang-select" class="lang-select" aria-label="Select Language">
@@ -689,47 +696,12 @@
         </section>
 
         <!-- ============================================= -->
-        <!-- VIEW 3 · MARKETPLACE (BUYER)                   -->
+        <!-- VIEW 3 · MARKET (ROUTED CATALOG)               -->
         <!-- ============================================= -->
         <section id="marketplace-view" class="view" hidden>
-          <div class="market-hero">
-            <h2>The living marketplace</h2>
-            <p>Every piece carries verified cultural provenance and the artisan's own voice — no ghost credit, no anonymous appropriation.</p>
-          </div>
-
-          <div class="market-toolbar">
-            <div class="search-wrap">
-              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
-              <input type="search" class="search-input" id="marketplace-search" placeholder="Search crafts, artisans, regions… (खोजें)" aria-label="Search the marketplace">
-              <button class="search-clear" id="search-clear-btn" type="button" aria-label="Clear search" hidden><i class="ph ph-x-circle" aria-hidden="true"></i></button>
-            </div>
-            <label class="sort-wrap">
-              <i class="ph ph-funnel" aria-hidden="true"></i>
-              <select class="sort-select" id="marketplace-sort" aria-label="Sort products">
-                <option value="newest">Newest first</option>
-                <option value="price-asc">Price: low to high</option>
-                <option value="price-desc">Price: high to low</option>
-                <option value="popular">Most viewed</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="chip-scroll" id="category-chips" role="group" aria-label="Filter by category">
-            <button class="cat-chip active" data-category="all" type="button">All crafts</button>
-            <button class="cat-chip" data-category="Pottery" type="button"><i class="ph ph-amphora" aria-hidden="true"></i> Pottery</button>
-            <button class="cat-chip" data-category="Textile" type="button"><i class="ph ph-shapes" aria-hidden="true"></i> Textiles</button>
-            <button class="cat-chip" data-category="Clothing" type="button"><i class="ph ph-t-shirt" aria-hidden="true"></i> Clothing</button>
-            <button class="cat-chip" data-category="Home Decor" type="button"><i class="ph ph-lamp" aria-hidden="true"></i> Home decor</button>
-            <button class="cat-chip" data-category="Religious" type="button"><i class="ph ph-flame" aria-hidden="true"></i> Puja &amp; idols</button>
-          </div>
-
-          <div class="results-meta">
-            <span id="results-count" role="status">—</span>
-            <button class="link-btn" id="clear-filters-btn" type="button" hidden>Clear filters</button>
-          </div>
-
-          <div class="market-grid" id="marketplace-grid" aria-live="polite">
-            <!-- Skeletons / product cards rendered by app.js -->
+          <div id="market-root" aria-live="polite">
+            <!-- Rendered by the market router in app.js:
+                 /market · /market/:category · /market/:category/:subcategory · /market/product/:sku -->
           </div>
         </section>
 
@@ -994,9 +966,31 @@
     </div>
   </div>
 
+  <!-- Cart drawer -->
+  <div class="cart-backdrop" id="cart-backdrop" hidden></div>
+  <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" hidden>
+    <header class="cart-head">
+      <h3><i class="ph-fill ph-shopping-cart-simple" aria-hidden="true"></i> <span data-i18n="cart_title">Your cart</span></h3>
+      <button class="modal-close" id="cart-close-btn" type="button" aria-label="Close cart"><i class="ph ph-x" aria-hidden="true"></i></button>
+    </header>
+    <div class="cart-items" id="cart-items" aria-live="polite"></div>
+    <footer class="cart-foot" id="cart-foot" hidden>
+      <div class="cart-total-row">
+        <span data-i18n="cart_total">Order total</span>
+        <strong id="cart-total">₹0</strong>
+      </div>
+      <p class="hint-line" data-i18n="cart_total_hint">Prices are confirmed server-side when the order is placed.</p>
+      <button class="btn-primary lg" id="cart-checkout-btn" type="button">
+        <i class="ph-fill ph-package" aria-hidden="true"></i> <span data-i18n="cart_place_order">Place order</span>
+      </button>
+      <div class="cart-order-result" id="cart-order-result" hidden></div>
+    </footer>
+  </aside>
+
   <!-- Toasts -->
   <div class="toast-stack" id="toast-container" role="status" aria-live="polite"></div>
 
-  <script src="/app.js?v=17"></script>
+  <script src="/app.js?v=18"></script>
+  <script src="/market.js?v=1"></script>
 </body>
 </html>

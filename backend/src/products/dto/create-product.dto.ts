@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsEnum, IsArray, IsNumber } from "class-validator";
+import { IsOptional, IsString, IsEnum, IsArray, IsNumber, IsInt, Min } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { ProductStatus } from "../product.entity";
@@ -10,6 +10,11 @@ export class CreateProductDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() descriptionHindi?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() titleBengali?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() descriptionBengali?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() sku?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() subcategoryId?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsNumber() floorPrice?: number;
+  @ApiProperty({ required: false }) @IsOptional() @IsNumber() exportPrice?: number;
+  @ApiProperty({ required: false }) @IsOptional() @IsInt() @Min(0) stock?: number;
   @ApiProperty({ required: false }) @IsOptional() @IsString() category?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() material?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() craft?: string;
@@ -28,6 +33,11 @@ export class UpdateProductDto {
   @IsOptional() @IsString() descriptionHindi?: string;
   @IsOptional() @IsString() titleBengali?: string;
   @IsOptional() @IsString() descriptionBengali?: string;
+  @IsOptional() @IsString() sku?: string;
+  @IsOptional() @IsString() subcategoryId?: string;
+  @IsOptional() @IsNumber() floorPrice?: number;
+  @IsOptional() @IsNumber() exportPrice?: number;
+  @IsOptional() @IsInt() @Min(0) stock?: number;
   @IsOptional() @IsString() category?: string;
   @IsOptional() @IsString() material?: string;
   @IsOptional() @IsString() craft?: string;
