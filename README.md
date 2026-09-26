@@ -1,305 +1,258 @@
-# Artisan AI Marketplace
+<div align="center">
 
-> **Voice-first, AI-assisted marketplace and business manager for marginalized artisans.**
-> 
-> *"Your digital business assistant — not another complicated e-commerce form."*
+# 🪔 Shilpika — Shilp for Shilpi
 
+**Voice-first, AI-assisted marketplace & business manager for marginalized Indian artisans.**
+
+*"Your digital business assistant — not another complicated e-commerce form."*
+
+[![Live on Render](https://img.shields.io/badge/Live-shilpika--craft--marketplace.onrender.com-46E3B7?logo=render)](https://shilpika-craft-marketplace.onrender.com)
+[![Backend](https://img.shields.io/badge/Backend-NestJS_10-E0234E?logo=nestjs)](https://nestjs.com/)
+[![DB](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql)](https://www.postgresql.org/)
+[![AI](https://img.shields.io/badge/Vision-Gemini-4285F4?logo=google)](https://ai.google.dev/)
+[![Voice](https://img.shields.io/badge/Voice-ElevenLabs-000000)](https://elevenlabs.io/)
+[![Mail](https://img.shields.io/badge/Mail-Brevo-0B996E)](https://www.brevo.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![NestJS](https://img.shields.io/badge/Backend-NestJS-E0234E?logo=nestjs)](https://nestjs.com/)
-[![Flutter](https://img.shields.io/badge/Mobile-Flutter-02569B?logo=flutter)](https://flutter.dev/)
-[![Gemini](https://img.shields.io/badge/AI-Gemini-4285F4?logo=google)](https://ai.google.dev/)
+
+</div>
 
 ---
 
-## Overview
+## ✨ What is Shilpika?
 
-Artisan AI Marketplace solves the digital commerce gap for traditional artisans who may lack photography, catalog writing, pricing, language, and technical skills. The app turns **a photo + a spoken product description** into a professional, multilingual, e-commerce-ready listing with AI-generated content and dynamic pricing.
+Shilpika is a **premium curated marketplace** for India's living craft traditions — Dhokra metal casting, Shola pith carving, Pattachitra sarees — built so an artisan can go from **a single photo and a spoken sentence** to a published, fairly-priced, verifiable listing, and a buyer can browse, enquire by **voice**, and order with **transparent floor & export pricing**.
 
-### Core Flow
-
-```
-📸 Photo → 🎨 AI Image Studio → 🎤 Voice Description → 🤖 AI Catalog 
-→ 📝 Artisan Review/Edit → 💰 Price Recommendation → 🚀 Publish → 🛒 Buyer Discovers
-```
+Everything is trilingual-first (English · हिन्दी · বাংলা) and every price shown to a buyer is resolved **server-side from the database** — never trusted from the client.
 
 ---
 
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Flutter Mobile App                          │
-│    Splash → Language → Auth → Dashboard → Add Product           │
-│    Voice Cataloger → AI Studio → Pricing → Marketplace          │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ HTTPS / REST
-┌───────────────────────────▼─────────────────────────────────────┐
-│              NestJS Backend (TypeScript)                         │
-│    Auth0 JWT → Products → AI Services → Pricing → Marketplace   │
-├─────────────┬──────────────┬───────────────┬────────────────────┤
-│  Gemini AI  │  ElevenLabs  │   Tiger Data  │   Google Cloud     │
-│  (catalog)  │  (voice)     │   (pricing)   │   (storage/deploy) │
-└─────────────┴──────────────┴───────────────┴────────────────────┘
-                            │
-┌───────────────────────────▼─────────────────────────────────────┐
-│                    PostgreSQL Database                           │
-│  Users · ArtisanProfiles · Products · Media · VoiceInputs       │
-│  AIListingVersions · CostInputs · MarketObservations             │
-│  PriceRecommendations · Inquiries                               │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Quick Start
-
-### Prerequisites
-
-- **Node.js** ≥ 18
-- **PostgreSQL** ≥ 14
-- **Flutter SDK** ≥ 3.0 (for mobile)
-- Optional: Docker (for PostgreSQL)
-
-### 1. Clone and Setup
-
-```bash
-git clone <repo-url>
-cd artisan-ai-marketplace
-
-# Copy environment variables
-cp .env.example backend/.env
-# Edit backend/.env with your configuration
-```
-
-### 2. Start PostgreSQL
-
-```bash
-# Using Docker
-docker run -d --name artisan-db \
-  -e POSTGRES_DB=artisan_marketplace \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=password \
-  -p 5432:5432 postgres:16
-
-# Or use your local PostgreSQL installation
-```
-
-### 3. Backend Setup
-
-```bash
-cd backend
-npm install
-
-# The database schema is auto-created in development (synchronize: true)
-# Or run migrations explicitly:
-npm run migration:run
-
-# Seed demo data (5 artisans, 15 products, market observations)
-npm run seed
-
-# Start development server
-npm run start:dev
-```
-
-The backend will be available at: **http://localhost:3000**
-
-- API: `http://localhost:3000/api/v1`
-- Swagger docs: `http://localhost:3000/api/docs`
-
-### 4. Mobile App Setup
-
-```bash
-cd mobile
-flutter pub get
-flutter run
-```
-
----
-
-## Environment Variables
-
-| Variable | Required | Purpose | Default |
-|----------|----------|---------|---------|
-| `DATABASE_URL` | ✅ | PostgreSQL connection string | — |
-| `DATABASE_HOST` | ✅ | DB host | `localhost` |
-| `DATABASE_PORT` | ✅ | DB port | `5432` |
-| `DATABASE_USER` | ✅ | DB username | `postgres` |
-| `DATABASE_PASSWORD` | ✅ | DB password | — |
-| `DATABASE_NAME` | ✅ | DB name | `artisan_marketplace` |
-| `AUTH0_DOMAIN` | ⚠️ | Auth0 tenant domain | — (uses dev JWT) |
-| `AUTH0_CLIENT_ID` | ⚠️ | Auth0 client ID | — |
-| `AUTH0_CLIENT_SECRET` | ⚠️ | Auth0 client secret | — |
-| `AUTH0_AUDIENCE` | ⚠️ | Auth0 API audience | — |
-| `GEMINI_API_KEY` | ⚠️ | Gemini AI API key | — (uses mock) |
-| `ELEVENLABS_API_KEY` | ⚠️ | ElevenLabs API key | — (uses mock) |
-| `ELEVENLABS_VOICE_ID` | ⚠️ | ElevenLabs voice ID | `21m00Tcm4TlvDq8ikWAM` |
-| `GOOGLE_CLOUD_PROJECT` | ⚠️ | GCP project ID | — |
-| `GOOGLE_APPLICATION_CREDENTIALS` | ⚠️ | Path to GCP credentials JSON | — |
-| `STORAGE_BUCKET` | ⚠️ | GCS bucket name | — (uses local mock) |
-| `STORAGE_PROVIDER` | ⚠️ | `local` or `gcs` | `local` |
-| `IMAGE_AI_PROVIDER` | ⚠️ | `mock`, `removebg`, or `gemini` | `mock` |
-| `REMOVEBG_API_KEY` | ⚠️ | remove.bg API key | — |
-| `MARKET_DATA_PROVIDER` | ⚠️ | `mock` or `tiger` | `mock` |
-| `MARKET_DATA_PROVIDER_URL` | ⚠️ | Tiger Data API URL | — |
-| `MARKET_DATA_PROVIDER_API_KEY` | ⚠️ | Tiger Data API key | — |
-| `JWT_SECRET` | ✅ | JWT secret (dev mode) | — |
-| `PORT` | — | Server port | `3000` |
-| `NODE_ENV` | — | `development` or `production` | `development` |
-
-> **⚠️ Required for real integrations. App works in mock mode without them.**
-
----
-
-## API Endpoints
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| `GET` | `/api/v1/health` | — | Health check |
-| `POST` | `/api/v1/auth/dev-token` | — | Generate dev JWT (dev only) |
-| `POST` | `/api/v1/auth/profile` | JWT | Create/update user profile |
-| `GET` | `/api/v1/auth/me` | JWT | Get current user |
-| `POST` | `/api/v1/products` | JWT | Create product |
-| `GET` | `/api/v1/products` | — | Search/list published products |
-| `GET` | `/api/v1/products/my` | JWT | Get artisan's own products |
-| `GET` | `/api/v1/products/:id` | — | Get product by ID |
-| `PATCH` | `/api/v1/products/:id` | JWT | Update product |
-| `POST` | `/api/v1/products/:id/publish` | JWT | Publish product |
-| `POST` | `/api/v1/products/:id/media` | JWT | Upload product image |
-| `GET` | `/api/v1/products/:id/media` | — | Get product media |
-| `POST` | `/api/v1/ai/catalog-generate` | JWT | Generate AI catalog |
-| `POST` | `/api/v1/ai/transcribe` | JWT | Transcribe voice to text |
-| `POST` | `/api/v1/ai/voice-synthesize` | JWT | Text to speech |
-| `POST` | `/api/v1/ai/image-enhance` | JWT | Enhance product image |
-| `POST` | `/api/v1/ai/price-recommendation` | JWT | Get price range recommendation |
-| `GET` | `/api/v1/marketplace/feed` | — | Browse marketplace |
-| `POST` | `/api/v1/inquiries` | JWT | Send buyer inquiry |
-| `GET` | `/api/v1/inquiries/my` | JWT | Get my inquiries |
-| `GET` | `/api/v1/artisans` | — | List artisan profiles |
-| `GET` | `/api/v1/artisans/:id` | — | Get artisan profile |
-| `GET` | `/api/v1/analytics/artisan` | JWT | Artisan dashboard analytics |
-| `GET` | `/api/v1/analytics/admin` | JWT | Admin overview |
-
-Full interactive docs: `http://localhost:3000/api/docs`
-
----
-
-## Commands Reference
-
-```bash
-# Backend
-npm run start:dev          # Development server with hot reload
-npm run build              # Production build
-npm run start:prod         # Run production build
-npm run test               # Run unit tests
-npm run test:e2e           # Run e2e tests
-npm run migration:run      # Run database migrations
-npm run migration:revert   # Revert last migration
-npm run seed               # Seed demo data
-
-# Mobile
-flutter run                # Run on connected device/emulator
-flutter build apk          # Build Android APK
-flutter build ios          # Build iOS (requires macOS + Xcode)
-flutter test               # Run Flutter tests
-```
-
----
-
-## Hackathon Demo Script
-
-1. **Open app** in artisan mode (Priya Sharma)
-2. **Select language**: Hindi (हिंदी)
-3. **Tap "Add Product"** → large orange CTA on dashboard
-4. **Take photo** with camera
-5. **AI Image Studio**: shows before/after enhancement
-6. **Record voice**: describe product naturally in Hindi
-7. **AI generates catalog**: title, description, category, tags in EN + HI
-8. **Edit catalog**: show all fields are editable
-9. **Enter costs**: ₹100 material + ₹200 labor
-10. **Price recommendation**: shows ₹450–₹800 range with factors
-11. **Publish**: confirmation screen
-12. **Switch to buyer mode** → browse marketplace → find product → send inquiry
-
----
-
-## Tech Stack
+## 🧱 Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Mobile | Flutter (cross-platform iOS/Android) |
-| Backend | NestJS (TypeScript) |
-| Database | PostgreSQL + TypeORM |
-| AI Catalog | Google Gemini 1.5 Flash |
-| Voice AI | ElevenLabs Scribe (STT) + Multilingual TTS |
-| Image AI | remove.bg (background removal) / Gemini |
-| Market Data | Tiger Data (configurable adapter) |
-| Auth | Auth0 (JWKS) + dev JWT mode |
-| Storage | Google Cloud Storage (+ local mock) |
-| Logging | Winston (structured JSON) |
-| API Docs | Swagger/OpenAPI |
-| Rate Limiting | NestJS Throttler |
-| Deployment | Google Cloud Run / Docker |
+|---|---|
+| **Frontend (SPA)** | Vanilla JavaScript (ES2022), semantic HTML5, hand-crafted CSS design system (*"Nature Distilled"* — warm cream & terracotta), Phosphor Icons |
+| **Backend** | Node.js 24, **NestJS 10** (modular DI architecture), Express, Swagger/OpenAPI |
+| **ORM / DB** | TypeORM + **PostgreSQL** (production) with a transparent **pg-mem** in-memory fallback for local dev & CI |
+| **Auth** | Auth0 (Google OAuth via authorization-code flow) + **email/password with Brevo OTP verification**, JWT sessions (`@nestjs/jwt`) |
+| **AI — Vision/Catalog** | **Google Gemini** (`@google/generative-ai`) — photo + voice transcript → structured trilingual catalog (EN/HI/BN) |
+| **AI — Voice** | **ElevenLabs** — Scribe STT (product voice enquiries) + TTS voice replies; browser `speechSynthesis` fallback |
+| **Email** | **Brevo (Sendinblue) v3 API** — transactional OTP mail |
+| **Anti-exploitation pricing** | Cost-input + market-observation pricing engine (see [How the pricing is calculated](#-how-the-pricing-is-calculated)) |
+| **Live auctions** | Nilaam — timed bidding with anti-sniping (final-minute extension) |
+| **Analytics** | Platform impact metrics for admins (artisans, listings, inquiries, views, AI adoption) |
+| **Hosting** | **Render** — Blueprint deploy (`render.yaml`), Node runtime, PostgreSQL |
 
 ---
 
-## Integrations Status
+## 🏛️ Architecture
 
-| Integration | Status | Notes |
-|-------------|--------|-------|
-| PostgreSQL | ✅ Implemented | Auto-sync in dev, migrations in prod |
-| Auth0 JWT | ✅ Implemented | Falls back to local JWT in dev |
-| Gemini AI | ✅ Implemented | Mock fallback when `GEMINI_API_KEY` absent |
-| ElevenLabs STT | ✅ Implemented | Mock fallback when `ELEVENLABS_API_KEY` absent |
-| ElevenLabs TTS | ✅ Implemented | Mock fallback when `ELEVENLABS_API_KEY` absent |
-| Tiger Data | ✅ Implemented | Seeded mock data + real adapter |
-| Google Cloud Storage | ✅ Implemented | Local mock when `STORAGE_BUCKET` absent |
-| Image Enhancement | ✅ Implemented | Mock/removebg/gemini (set `IMAGE_AI_PROVIDER`) |
-
----
-
-## Known Limitations
-
-1. **Flutter**: Screen stubs for PricingScreen, ProductDetail, ArtisanProfile, Settings need full implementation
-2. **Real GCS upload**: Requires `@google-cloud/storage` to be installed separately (optional dep)
-3. **ElevenLabs language support**: Not all Indian languages are directly supported; interface is ready for provider substitution
-4. **Image enhancement**: Full pixel-level enhancement requires a production image AI service (remove.bg or custom model)
-5. **Payment flow**: Not implemented in MVP — inquiry-based contact only
-6. **Push notifications**: Not implemented
-7. **Offline support**: Limited — requires connectivity for AI features
-
----
-
-## Project Structure
-
+```text
+                        ┌─────────────────────────────────────────────┐
+                        │            Render (Node runtime)            │
+                        │                                             │
+ Browser ── GET / … ──▶ │  express.static(backend/public)             │
+   │  deep links        │  SPA fallback → index.html (/market/…)      │
+   │                    │                                             │
+   ├── /api/v1/* ─────▶ │  NestJS (Throttler ▸ Guards ▸ Controllers)  │
+   │                    │   ├── auth        (Auth0 · JWT · OTP·Brevo) │
+   │                    │   ├── market      (curated catalog)         │
+   │                    │   ├── orders      (server-side pricing)     │
+   │                    │   ├── products    (seller listings)         │
+   │                    │   ├── ai          (Gemini · ElevenLabs)     │
+   │                    │   ├── pricing     (fair-price engine)       │
+   │                    │   ├── auctions · inquiries · analytics     │
+   │                    │   └── marketplace/feed (health-checked)    │
+   │                    │                                             │
+   │                    │  TypeORM ▸ PostgreSQL (synchronize on boot) │
+   └── static assets ◀─ │  /assets/market/* (owner product photos)    │
+                        └─────────────────────────────────────────────┘
+                              ▲                ▲              ▲
+                        Gemini API       ElevenLabs API   Brevo API
+                        (catalog AI)     (STT + TTS)      (OTP email)
 ```
-artisan-ai-marketplace/
-├── backend/                    # NestJS backend
+
+**One service runs the whole site.** The SPA (`backend/public`) is served by the same NestJS process that exposes the API, so the deployed app needs no CORS and no second service. Deep links like `/market/product/DHOKRA-001` resolve through an SPA fallback that rewrites any non-`/api` GET to `index.html` — shared links survive refresh, new tabs, WhatsApp, and email.
+
+---
+
+## 🛍️ The Curated Market
+
+```text
+Market (/market)
+├── Sculpture (/market/sculpture)
+│   ├── Dhokra Art        (/market/sculpture/dhokra-art)
+│   └── Shola Pith Art    (/market/sculpture/shola-pith-art)
+└── Outfits (/market/outfits)
+    └── Pattachitra Saree (/market/outfits/pattachitra-saree)
+```
+
+- **Structured, extensible model** — `MarketCategory` → `MarketSubcategory` → `Product`. Adding a craft = one object in [`backend/src/market/market-seed.ts`](backend/src/market/market-seed.ts); the catalog is **upserted on every boot** (config file = source of truth, no manual DB edits).
+- **Subcategory pages** — craft story, cultural-provenance notes, an embedded **YouTube documentary** (per-craft, `youtube-nocookie`), and three featured products with owner-supplied photography.
+- **Product pages** (`/market/product/:SKU`) — stable human-readable SKUs (`DHOKRA-001`, `SHOLA-002`, `PATTA-003`), large imagery, **Floor Price and Export Price shown separately, never merged**, live stock, quantity stepper, Add to Cart / Place Order, Web-Share-API sharing with clipboard fallback, and an **ElevenLabs voice enquiry** that answers strictly from live product data (it can quote the floor/export price, stock, and craft story — it cannot invent facts).
+- **Cart & orders** — a localStorage cart drawer (grouped per SKU + price type) that checks out via `POST /api/v1/orders`. The backend re-reads the authoritative price, validates stock, decrements inventory, stamps an order number (`SHP-XXXXXXXX`), and stores the full record. Guests can browse and share; sign-in is requested only when ordering.
+
+---
+
+## 🧮 How the Pricing Is Calculated
+
+Shilpika's core promise is a **fair, explainable price**. The engine in [`pricing.service.ts`](backend/src/pricing/pricing.service.ts) combines the artisan's real costs with market observations — and *tells you exactly which factors it used*.
+
+### 1 · Cost base
+
+```text
+totalCost = materialCost + laborCost + otherCost
+```
+
+The artisan enters these from the listing wizard (the Anti-Exploitation Card also tracks generations of lineage and hours of work, shown to buyers as provenance).
+
+### 2 · Cost-based range (with desired margin, default 30%)
+
+```text
+marginFraction = desiredMarginPercent / 100
+
+costBasedMin = round( totalCost × (1 + marginFraction × 0.5) )   ← half-margin floor
+costBasedMax = round( totalCost × (1 + marginFraction × 1.5) )   ← 1.5×-margin ceiling
+```
+
+### 3 · Blend with real market observations (when available)
+
+If regional market observations exist for the craft/region, the cost range is clamped to the market — never below 80% of the observed minimum, never above 110% of the observed maximum:
+
+```text
+minPrice = round( max( costBasedMin,  market.min × 0.80 ) )
+maxPrice = round( min( max( costBasedMax, market.avg × 1.20 ), market.max × 1.10 ) )
+```
+
+If **no** market data exists, the engine says so explicitly (`data_availability: COST_BASED`) and prices purely from costs — it **never fabricates market data**. Every recommendation returns a human-readable `factors[]` list (costs, margin, number of observations, market median/trend, data freshness) and is persisted for audit.
+
+### 4 · Floor Price vs Export Price (buyer-facing)
+
+Curated market products carry **two distinct prices** (e.g. Floor ₹2,500 / Export ₹4,500). They are stored as separate columns, displayed side-by-side, and an order records `priceType: "floor" | "export"` with the **unit price resolved from the database at order time**:
+
+```text
+order.totalAmount = authoritativeUnitPrice × quantity        (never client-supplied)
+```
+
+### 5 · Quick in-wizard estimate (client fallback when the API is offline)
+
+```text
+floor ≈ totalCost                     (or listedMin / 1.25 as a sanity floor)
+B2C   ≈ (listedMin + listedMax) / 2
+B2B   ≈ max( 1.8 × B2C, listedMax )
+```
+
+---
+
+## 🔐 Authentication & Security
+
+| Flow | What happens |
+|---|---|
+| **Continue with Google** | Auth0 authorization-code flow → backend exchanges code → provisions user (`emailVerified: true`, pre-verified) → JWT session. Zero friction, no OTP. |
+| **Email + password (sign up)** | Account + Auth0 DB-connection registration + artisan profile (Aadhaar/region for seller KYC) created → **6-digit OTP emailed via Brevo** → user verifies → session issued. |
+| **Email + password (sign in)** | Credentials checked against Auth0 (and local scrypt hash fallback) → **OTP emailed** → verify → session. |
+
+**OTP hardening:** codes are stored as `sha256(email::code)` (never plaintext), expire after **10 minutes**, allow a maximum of **5 incorrect attempts**, are **single-use**, and resends are rate-limited to **one per 60 seconds** (plus the global throttler: 30 requests/min/IP). If `BREVO_API_KEY` is ever missing in production, sign-up/sign-in **degrade gracefully instead of bricking** (session issued without verification, loudly logged) — set the key to enable verification.
+
+Other guarantees: order prices can't be manipulated (the server re-reads the DB), product IDs are validated server-side, `forbidNonWhitelisted` DTO validation, Helmet, and **no API key ever reaches the frontend** (Gemini, ElevenLabs and Brevo are called server-side only). Passwords are stored as salted **scrypt** hashes.
+
+---
+
+## 🌐 Multilingual & Accessible
+
+- **English · हिन्दी · বাংলা** across the entire UI (including the market, cart and OTP screens), persisted per visitor.
+- Product names show a **language-aware second line** — Bengali subtitle in বাংলা mode, Hindi in हिन्दी mode (AI-generated per listing alongside English).
+- Semantic HTML, labelled controls, `aria-live` regions for dynamic results, visible focus rings, keyboard-navigable cards.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+Node.js 20+ (24 recommended) · PostgreSQL (optional — falls back to in-memory pg-mem) · A Brevo API key for real OTP emails.
+
+### 1 · Install & run
+
+```bash
+git clone https://github.com/poulamisingha1212-source/-Shilpika.git
+cd Shilpika
+npm run setup          # installs backend dependencies
+npm run backend:dev    # starts the API + SPA on http://localhost:3000
+```
+
+Open **http://localhost:3000** — the SPA and API share one origin. Without a Postgres URL the app transparently seeds and runs on an in-memory PostgreSQL emulator.
+
+### 2 · Environment variables (backend/.env)
+
+```bash
+cp .env.example backend/.env    # then fill in what you have
+```
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `DATABASE_URL` | prod | PostgreSQL connection string (with `DATABASE_SSL=true` for hosted DBs) |
+| `AUTH0_DOMAIN` / `AUTH0_CLIENT_ID` / `AUTH0_CLIENT_SECRET` / `AUTH0_AUDIENCE` | for Google | Auth0 tenant + SPA credentials |
+| `APP_BASE_URL` | prod | Public origin — used to build OAuth callback URLs |
+| `JWT_SECRET` | yes | Session signing (auto-generated on Render) |
+| `GEMINI_API_KEY` | for AI catalog | Google AI Studio key |
+| `ELEVENLABS_API_KEY` / `ELEVENLABS_VOICE_ID` | for voice | ElevenLabs STT + TTS |
+| `BREVO_API_KEY` / `BREVO_SENDER_EMAIL` / `BREVO_SENDER_NAME` | for OTP | Brevo transactional email |
+| `DB_SYNCHRONIZE` | deploy | `true` → TypeORM creates/syncs schema on boot |
+| `THROTTLE_TTL` / `THROTTLE_LIMIT` | optional | Rate limiting (defaults 60s / 30 req) |
+
+### 3 · Deploy to Render
+
+The repo ships a **Render Blueprint** (`render.yaml`): Node web service rooted at `backend/`, build `npm install --include=dev && npm run build`, start `node dist/src/main.js`, health check `GET /api/v1/marketplace/feed`. Secrets marked `sync: false` are entered once in the Render dashboard. Push to `main` → auto-deploy → on boot the app syncs the schema and upserts the market catalog.
+
+---
+
+## 🔌 API at a Glance
+
+| Area | Endpoints |
+|---|---|
+| **Market** | `GET /api/v1/market/categories` · `/categories/:slug` · `/subcategories/:slug` · `/products/:sku` · `POST /products/:sku/enquiry` |
+| **Auth** | `POST /auth/signup` → OTP · `POST /auth/login` → OTP · `POST /auth/verify-otp` · `POST /auth/resend-otp` · `GET /auth/google` → Auth0 · `GET /auth/me` |
+| **Orders** | `POST /api/v1/orders` (auth; `productSku`, `priceType`, `quantity`) · `GET /api/v1/orders/mine` |
+| **Products (seller)** | `POST/PATCH /api/v1/products` · `/publish` · `GET /marketplace/feed` |
+| **AI** | `POST /api/v1/ai/catalog-generate` (Gemini) · voice transcription/synthesis |
+| **Pricing** | `POST /api/v1/pricing/recommend` · accept/override · market trend |
+| **More** | auctions · inquiries · analytics · Swagger UI at **/api/docs** |
+
+---
+
+## 🧪 Quality
+
+```bash
+npm run backend:build   # TypeScript build (the static gate)
+npm run backend:test    # Jest suite — 115+ tests across pricing, auth, inquiries, security audit…
+```
+
+The security-audit suite covers auth bypass, price tampering and ownership guards; the pricing suite validates the fair-price math above. Seeded demo data (artisans, products, market observations) is clearly labelled `[DEMO]` wherever it is used.
+
+---
+
+## 📁 Repository Map
+
+```text
+Shilpika/
+├── render.yaml                     # Render Blueprint (service + env contract)
+├── backend/
 │   ├── src/
-│   │   ├── auth/               # Auth0 JWT strategy
-│   │   ├── users/              # User + ArtisanProfile
-│   │   ├── products/           # Product CRUD
-│   │   ├── media/              # Image upload/storage
-│   │   ├── ai/
-│   │   │   ├── gemini/         # Gemini catalog service
-│   │   │   ├── voice/          # ElevenLabs STT/TTS
-│   │   │   └── image/          # Image enhancement
-│   │   ├── pricing/            # PricingService + Tiger Data adapter
-│   │   ├── marketplace/        # Feed + search
-│   │   ├── inquiries/          # Buyer inquiries
-│   │   ├── analytics/          # Dashboard metrics
-│   │   ├── common/             # Guards, filters, interceptors
-│   │   └── database/seeds/     # Demo data seeder
-│   └── test/                   # Unit tests
-├── mobile/                     # Flutter app
-│   └── lib/
-│       ├── core/               # Services, providers, router
-│       ├── features/           # Screens by feature
-│       └── shared/             # Theme, shared widgets
-└── docs/                       # Architecture docs
+│   │   ├── market/                 # curated catalog: entities, API, market-seed.ts (owner content)
+│   │   ├── orders/                 # cart-backed orders, server-side pricing, stock
+│   │   ├── auth/                   # JWT + Auth0 + Brevo OTP (brevo.service, email-otp.entity)
+│   │   ├── products/ pricing/ ai/  # listings, fair-price engine, Gemini + ElevenLabs
+│   │   ├── auctions/ inquiries/    # Nilaam live bidding, buyer–artisan enquiries
+│   │   └── database/               # TypeORM setup, seeds, pg-mem fallback
+│   ├── public/                     # the SPA: index.html · app.js · market.js · styles.css
+│   └── public/assets/market/       # owner product & category photography
+├── frontend/  mobile/              # Flutter companion app scaffolding
+└── docs/                           # PRD & design documents
 ```
 
 ---
 
-## License
+<div align="center">
 
-MIT — See [LICENSE](LICENSE)
+**Shilpika** — *no ghost credit, no anonymous appropriation. Every piece carries its maker's name, voice, and a fair price.* 🪔
+
+</div>
