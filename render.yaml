@@ -34,6 +34,12 @@ services:
         sync: false
       - key: ELEVENLABS_VOICE_ID
         value: EXAVITQu4vr4xnSDxMaL
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        value: questcivic@gmail.com
+      - key: BREVO_SENDER_NAME
+        value: Shilpika
       - key: JWT_SECRET
         generateValue: true
       - key: DB_SYNCHRONIZE

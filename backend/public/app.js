@@ -265,6 +265,15 @@ const I18N = {
     enquiry_replay: 'Play answer',
     enquiry_you_asked: 'You asked:',
     enquiry_voice_question: '(voice question)',
+    // ── Email OTP ──
+    otp_title: 'Check your email',
+    otp_subtitle: 'We sent a 6-digit code to',
+    otp_code_label: 'Enter the 6-digit code',
+    otp_verify: 'Verify & continue',
+    otp_resend: 'Resend code',
+    otp_back: 'Back',
+    otp_success: 'Email verified — welcome to Shilpika!',
+    otp_resent: 'A new code is on its way.',
   },
   hi: {
     brand_sub: 'स्वर-प्रथम, एआई-आधारित शिल्प वाणिज्य · सांस्कृतिक प्रमाणिकता',
@@ -451,6 +460,15 @@ const I18N = {
     enquiry_replay: 'उत्तर चलाएँ',
     enquiry_you_asked: 'आपने पूछा:',
     enquiry_voice_question: '(आवाज़ प्रश्न)',
+    // ── Email OTP ──
+    otp_title: 'अपना ईमेल देखें',
+    otp_subtitle: 'हमने 6-अंकों का कोड भेजा है',
+    otp_code_label: '6-अंकों का कोड दर्ज करें',
+    otp_verify: 'सत्यापित करें और आगे बढ़ें',
+    otp_resend: 'कोड फिर भेजें',
+    otp_back: 'वापस',
+    otp_success: 'ईमेल सत्यापित — शिल्पिका में आपका स्वागत है!',
+    otp_resent: 'नया कोड भेज दिया गया है।',
   },
   bn: {
     brand_sub: 'কণ্ঠস্বর-প্রথম, এআই-চালিত কারুশিল্প বাণিজ্য · সাংস্কৃতিক উৎস ও সত্যতা',
@@ -637,6 +655,15 @@ const I18N = {
     enquiry_replay: 'উত্তর শুনুন',
     enquiry_you_asked: 'আপনি জিজ্ঞাসা করেছেন:',
     enquiry_voice_question: '(ভয়েস প্রশ্ন)',
+    // ── Email OTP ──
+    otp_title: 'আপনার ইমেইল দেখুন',
+    otp_subtitle: 'আমরা ৬ সংখ্যার কোড পাঠিয়েছি',
+    otp_code_label: '৬ সংখ্যার কোড লিখুন',
+    otp_verify: 'যাচাই করে এগিয়ে যান',
+    otp_resend: 'কোড আবার পাঠান',
+    otp_back: 'পেছনে',
+    otp_success: 'ইমেইল যাচাই হয়েছে — শিল্পিকায় স্বাগতম!',
+    otp_resent: 'নতুন কোড পাঠানো হয়েছে।',
   },
 };
 
@@ -929,6 +956,8 @@ function bindLoginControls() {
       if (!res.ok) {
         throw new Error(data?.message || 'Sign-in failed. Check your email and password.');
       }
+      // Email + password sign-in → OTP verification step before the session starts.
+      if (data?.otpRequired) { showOtpStep(data.email, 'login', data.devCode); return; }
       saveSession({ token: data.token, user: data.user, isAuth0: data.isAuth0 });
       showToast(t('signin_success') || 'Welcome back!', 'success');
       enterApp();
@@ -986,6 +1015,8 @@ function bindLoginControls() {
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.message || 'Failed to create account. Please try again.');
 
+      // New account created → verify the email via OTP before entering.
+      if (data?.otpRequired) { showOtpStep(data.email, 'signup', data.devCode); return; }
       saveSession({ token: data.token, user: data.user, isAuth0: true });
       showToast(t('signup_success') || 'Account created! Welcome to Shilpika.', 'success');
       enterApp();
@@ -994,6 +1025,104 @@ function bindLoginControls() {
     } finally {
       submitBtn.disabled = false;
     }
+  });
+
+  // ── Email OTP verification step (Brevo) ───────────────────────────────────
+  let otpResendTimer = null;
+  const otpContext = { email: '', purpose: 'login' };
+
+  function showOtpStep(email, purpose, devCode) {
+    otpContext.email = email;
+    otpContext.purpose = purpose;
+    $('otp-email').textContent = email;
+    const codeInput = $('otp-code');
+    if (codeInput) codeInput.value = '';
+    const errEl = $('otp-error');
+    if (errEl) errEl.hidden = true;
+    $('auth-step-0').hidden = true;
+    $('auth-step-otp').hidden = false;
+    codeInput?.focus();
+    if (devCode) showToast(`Dev OTP: ${devCode}`, 'info');
+    startOtpResendCountdown();
+  }
+
+  function startOtpResendCountdown() {
+    const btn = $('btn-otp-resend');
+    const count = $('otp-resend-count');
+    if (!btn || !count) return;
+    let seconds = 60;
+    btn.disabled = true;
+    count.textContent = seconds;
+    if (otpResendTimer) clearInterval(otpResendTimer);
+    otpResendTimer = setInterval(() => {
+      seconds -= 1;
+      count.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(otpResendTimer);
+        otpResendTimer = null;
+        btn.disabled = false;
+      }
+    }, 1000);
+  }
+
+  $('otp-code')?.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+  });
+  $('otp-code')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') $('btn-otp-verify')?.click();
+  });
+
+  $('btn-otp-verify')?.addEventListener('click', async () => {
+    const code = $('otp-code')?.value.trim();
+    const errEl = $('otp-error');
+    const btn = $('btn-otp-verify');
+    if (errEl) errEl.hidden = true;
+    if (!code || code.length !== 6) {
+      if (errEl) { errEl.textContent = 'Enter the 6-digit code from your email.'; errEl.hidden = false; }
+      return;
+    }
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${API_BASE}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: otpContext.email, code, purpose: otpContext.purpose }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.message || 'Verification failed. Please try again.');
+      showToast(t('otp_success') || 'Email verified — welcome to Shilpika!', 'success');
+      saveSession({ token: data.token, user: data.user, isAuth0: true });
+      enterApp();
+    } catch (err) {
+      if (errEl) { errEl.textContent = err.message; errEl.hidden = false; }
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $('btn-otp-resend')?.addEventListener('click', async () => {
+    const errEl = $('otp-error');
+    if (errEl) errEl.hidden = true;
+    try {
+      const res = await fetch(`${API_BASE}/auth/resend-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: otpContext.email, purpose: otpContext.purpose }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.message || 'Could not resend the code.');
+      showToast(t('otp_resent') || 'A new code is on its way.', 'success');
+      if (data.devCode) showToast(`Dev OTP: ${data.devCode}`, 'info');
+      startOtpResendCountdown();
+    } catch (err) {
+      if (errEl) { errEl.textContent = err.message; errEl.hidden = false; }
+    }
+  });
+
+  $('btn-otp-back')?.addEventListener('click', () => {
+    $('auth-step-otp').hidden = true;
+    $('auth-step-0').hidden = false;
+    if (otpResendTimer) { clearInterval(otpResendTimer); otpResendTimer = null; }
   });
 
   // ── Google Onboarding Controls ─────────────────────────────────────────────

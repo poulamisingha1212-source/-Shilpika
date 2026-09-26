@@ -49,6 +49,10 @@ export class User {
   @Column({ default: false })
   onboardingCompleted: boolean;
 
+  /** Email ownership confirmed via OTP (Google sign-ins are pre-verified). */
+  @Column({ default: false })
+  emailVerified: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

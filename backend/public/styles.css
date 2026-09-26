@@ -4391,3 +4391,21 @@ textarea.input { resize: vertical; padding-top: 10px; padding-bottom: 10px; line
 /* Owner copy paragraphs on subcategory pages */
 .market-sub-desc p, .market-cultural-body p { margin: 0 0 10px; color: var(--ink-soft); font-size: 0.94rem; line-height: 1.65; max-width: 72ch; }
 .market-cultural-body p:last-child { margin-bottom: 0; }
+
+/* Email OTP verification step (login overlay) */
+.otp-head { text-align: center; margin-bottom: 14px; }
+.otp-icon {
+  width: 52px; height: 52px; margin: 0 auto 10px; border-radius: 16px;
+  display: grid; place-items: center; font-size: 1.5rem;
+  background: var(--clay-wash); color: var(--clay-deep);
+}
+.otp-head h3 { margin: 0 0 4px; font-size: 1.2rem; }
+.otp-sub { margin: 0; color: var(--ink-soft); font-size: 0.88rem; }
+.otp-sub strong { color: var(--ink); }
+.otp-input {
+  text-align: center; font-size: 1.3rem; letter-spacing: 0.5em; font-weight: 700;
+  margin: 6px 0 8px;
+}
+.otp-resend-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 12px;
+}

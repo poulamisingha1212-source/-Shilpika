@@ -12,9 +12,19 @@ import { JwtService } from "@nestjs/jwt";
 import { User, UserRole } from "../users/user.entity";
 import { ArtisanProfile, VerificationStatus } from "../users/artisan-profile.entity";
 import { CreateProfileDto } from "./dto/create-profile.dto";
+import { EmailOtp, OtpPurpose } from "./email-otp.entity";
+import { BrevoService } from "./brevo.service";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { Logger } from "winston";
 import * as crypto from "crypto";
+
+const OTP_TTL_MINUTES = 10;
+const OTP_MAX_ATTEMPTS = 5;
+const OTP_RESEND_COOLDOWN_SECONDS = 60;
+
+function hashOtpCode(email: string, code: string): string {
+  return crypto.createHash("sha256").update(`${email.toLowerCase()}::${code}`).digest("hex");
+}
 
 function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString("hex");
@@ -39,8 +49,10 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(ArtisanProfile) private artisanProfileRepo: Repository<ArtisanProfile>,
+    @InjectRepository(EmailOtp) private otpRepo: Repository<EmailOtp>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private brevoService: BrevoService,
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger
   ) {}
 
@@ -275,30 +287,28 @@ export class AuthService {
       }
     }
 
-    const token = this.jwtService.sign(
-      { sub: user.id, auth0Id: user.auth0Id, email: user.email, role: user.role, name: user.displayName, isAuth0: true },
-      { expiresIn: "24h" } as any,
-    );
+    // Email + password signup → verify email ownership via OTP before the
+    // session is issued (Google sign-in is unaffected and pre-verified).
+    const otp = await this.issueOtp(normalizedEmail, OtpPurpose.SIGNUP);
+    if (otp.required) {
+      return {
+        otpRequired: true,
+        email: normalizedEmail,
+        ...(otp.devCode ? { devCode: otp.devCode } : {}),
+      };
+    }
 
-    return {
-      token,
-      isAuth0: true,
-      user: {
-        id: user.id,
-        auth0Id: user.auth0Id,
-        email: user.email,
-        displayName: user.displayName,
-        role: user.role,
-        avatarUrl: user.avatarUrl,
-        isAuth0: true,
-      },
-    };
+    // Mail provider not configured in production — never brick sign-up.
+    this.logger.warn("Email OTP skipped (no mail provider) — issuing session without verification");
+    user.emailVerified = true;
+    await this.userRepo.save(user);
+    return { verificationSkipped: true, ...this.issueSession(user) };
   }
 
   /**
    * Sign in with email and password via Auth0.
    * Authenticates password directly against Auth0 database connection,
-   * verifies credentials, and issues an authenticated session token.
+   * verifies credentials, then requires an email OTP before issuing a session.
    */
   async login(dto: {
     email: string;
@@ -396,11 +406,130 @@ export class AuthService {
       }
     }
 
+    // Credentials are valid → prove email ownership with an OTP before the
+    // session is issued (Google sign-in is unaffected and pre-verified).
+    const otp = await this.issueOtp(normalizedEmail, OtpPurpose.LOGIN);
+    if (otp.required) {
+      return {
+        otpRequired: true,
+        email: normalizedEmail,
+        ...(otp.devCode ? { devCode: otp.devCode } : {}),
+      };
+    }
+
+    // Mail provider not configured in production — never brick sign-in.
+    this.logger.warn("Email OTP skipped (no mail provider) — issuing session without verification");
+    if (!user.emailVerified) {
+      user.emailVerified = true;
+      await this.userRepo.save(user);
+    }
+    return { verificationSkipped: true, ...this.issueSession(user) };
+  }
+
+  /**
+   * Verify a 6-digit email OTP (signup or login purpose) and issue the session.
+   * Codes are hashed at rest, single-use, expire after 10 minutes, and allow
+   * at most 5 incorrect attempts before a new code must be requested.
+   */
+  async verifyOtp(dto: { email: string; code: string; purpose: OtpPurpose }) {
+    const normalized = (dto.email || "").trim().toLowerCase();
+    const code = (dto.code || "").trim();
+    if (!normalized || !/^\d{6}$/.test(code)) {
+      throw new BadRequestException("Enter the 6-digit code from your email.");
+    }
+    if (!Object.values(OtpPurpose).includes(dto.purpose)) {
+      throw new BadRequestException("Invalid verification purpose.");
+    }
+
+    const otp = await this.otpRepo.findOne({
+      where: { email: normalized, purpose: dto.purpose },
+      order: { createdAt: "DESC" },
+    });
+    if (!otp || otp.consumedAt) {
+      throw new BadRequestException("This code is no longer valid. Request a new one.");
+    }
+    if (otp.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException("This code has expired. Request a new one.");
+    }
+    if (otp.attempts >= OTP_MAX_ATTEMPTS) {
+      throw new BadRequestException("Too many incorrect attempts. Request a new code.");
+    }
+
+    if (hashOtpCode(normalized, code) !== otp.codeHash) {
+      otp.attempts += 1;
+      await this.otpRepo.save(otp);
+      throw new BadRequestException(
+        otp.attempts >= OTP_MAX_ATTEMPTS
+          ? "Too many incorrect attempts. Request a new code."
+          : "That code is incorrect. Please check your email and try again.",
+      );
+    }
+
+    otp.consumedAt = new Date();
+    await this.otpRepo.save(otp);
+
+    const user = await this.userRepo.findOne({ where: { email: normalized } });
+    if (!user) throw new NotFoundException("No account found for this email.");
+
+    if (!user.emailVerified) {
+      user.emailVerified = true;
+      await this.userRepo.save(user);
+    }
+
+    return this.issueSession(user);
+  }
+
+  /** Re-send an OTP for the given purpose, rate-limited to one per minute. */
+  async resendOtp(dto: { email: string; purpose: OtpPurpose }) {
+    const normalized = (dto.email || "").trim().toLowerCase();
+    if (!normalized || !Object.values(OtpPurpose).includes(dto.purpose)) {
+      throw new BadRequestException("A valid email and purpose are required.");
+    }
+    const last = await this.otpRepo.findOne({
+      where: { email: normalized, purpose: dto.purpose },
+      order: { createdAt: "DESC" },
+    });
+    if (last && Date.now() - last.createdAt.getTime() < OTP_RESEND_COOLDOWN_SECONDS * 1000) {
+      const wait = Math.ceil(
+        (OTP_RESEND_COOLDOWN_SECONDS * 1000 - (Date.now() - last.createdAt.getTime())) / 1000,
+      );
+      throw new BadRequestException(`Please wait ${wait}s before requesting another code.`);
+    }
+    return this.issueOtp(normalized, dto.purpose);
+  }
+
+  /**
+   * Generate + email an OTP. Returns whether OTP is required and, in
+   * non-production without a mail provider, the code so the flow stays testable.
+   */
+  private async issueOtp(email: string, purpose: OtpPurpose): Promise<{ required: boolean; devCode?: string }> {
+    if (!this.brevoService.isConfigured()) {
+      const isProduction = this.configService.get<string>("NODE_ENV") === "production";
+      if (isProduction) return { required: false };
+      const devCode = String(crypto.randomInt(100000, 1000000));
+      await this.otpRepo.save(
+        this.otpRepo.create({ email, codeHash: hashOtpCode(email, devCode), purpose, expiresAt: new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000) }),
+      );
+      this.logger.warn("BREVO_API_KEY not configured — dev OTP code generated", { email });
+      return { required: true, devCode };
+    }
+
+    const code = String(crypto.randomInt(100000, 1000000));
+    await this.otpRepo.save(
+      this.otpRepo.create({ email, codeHash: hashOtpCode(email, code), purpose, expiresAt: new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000) }),
+    );
+    const result = await this.brevoService.sendOtpEmail(email, code, purpose, OTP_TTL_MINUTES);
+    if (!result.sent) {
+      throw new BadRequestException("Could not send the verification email. Please try again in a moment.");
+    }
+    return { required: true };
+  }
+
+  private issueSession(user: User) {
     const token = this.jwtService.sign(
       { sub: user.id, auth0Id: user.auth0Id, email: user.email, role: user.role, name: user.displayName, isAuth0: true },
       { expiresIn: "24h" } as any,
     );
-
     return {
       token,
       isAuth0: true,
@@ -447,6 +576,7 @@ export class AuthService {
         role: targetRole,
         isActive: true,
         onboardingCompleted: false,
+        emailVerified: true, // identity (and email) already verified by Google/Auth0
       });
       user = await this.userRepo.save(user);
       this.logger.info("New Auth0 user provisioned", { userId: user.id, auth0Id, role: user.role });

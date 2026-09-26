@@ -157,6 +157,31 @@
         </div>
       </div>
 
+      <!-- ─── STEP 0.5: Email OTP verification (email + password flows) ─── -->
+      <div id="auth-step-otp" hidden>
+        <div class="otp-head">
+          <div class="otp-icon" aria-hidden="true"><i class="ph-fill ph-envelope-simple-open"></i></div>
+          <h3 data-i18n="otp_title">Check your email</h3>
+          <p class="otp-sub">
+            <span data-i18n="otp_subtitle">We sent a 6-digit code to</span>
+            <strong id="otp-email"></strong>
+          </p>
+        </div>
+        <label class="field-label" for="otp-code" data-i18n="otp_code_label">Enter the 6-digit code</label>
+        <input class="input otp-input" type="text" id="otp-code" inputmode="numeric" autocomplete="one-time-code"
+               maxlength="6" placeholder="••••••" aria-describedby="otp-error">
+        <p class="hint-line" id="otp-error" hidden></p>
+        <button type="button" class="btn-primary lg" id="btn-otp-verify" style="width:100%">
+          <i class="ph-fill ph-shield-check" aria-hidden="true"></i> <span data-i18n="otp_verify">Verify &amp; continue</span>
+        </button>
+        <div class="otp-resend-row">
+          <button type="button" class="auth-switch-btn" id="btn-otp-resend" disabled>
+            <span data-i18n="otp_resend">Resend code</span> (<span id="otp-resend-count">60</span>s)
+          </button>
+          <button type="button" class="auth-switch-btn" id="btn-otp-back">← <span data-i18n="otp_back">Back</span></button>
+        </div>
+      </div>
+
       <!-- ─── STEP 1: Google Onboarding & Role Selection ─── -->
       <div id="auth-step-onboarding" hidden>
         <div class="google-onboard-header">

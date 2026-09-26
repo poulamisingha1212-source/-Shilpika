@@ -17,6 +17,7 @@ import {
 } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { CreateProfileDto } from "./dto/create-profile.dto";
+import { OtpPurpose } from "./email-otp.entity";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
 import { User, UserRole } from "../users/user.entity";
 import { ConfigService } from "@nestjs/config";
@@ -176,7 +177,7 @@ export class AuthController {
   }
 
   @Post("signup")
-  @ApiOperation({ summary: "Sign up new user with email and password via Auth0 database connection" })
+  @ApiOperation({ summary: "Sign up with email + password — sends a Brevo OTP to verify the email" })
   async signup(
     @Body("email") email: string,
     @Body("password") password: string,
@@ -189,7 +190,7 @@ export class AuthController {
   }
 
   @Post("login")
-  @ApiOperation({ summary: "Sign in with email and password authenticated via Auth0" })
+  @ApiOperation({ summary: "Sign in with email + password — sends a Brevo OTP before the session is issued" })
   async login(
     @Body("email") email: string,
     @Body("password") password?: string,
@@ -197,6 +198,25 @@ export class AuthController {
     @Body("role") role?: UserRole,
   ) {
     return this.authService.login({ email, password, name, role });
+  }
+
+  @Post("verify-otp")
+  @ApiOperation({ summary: "Verify the email OTP (signup or login) and receive the session token" })
+  verifyOtp(
+    @Body("email") email: string,
+    @Body("code") code: string,
+    @Body("purpose") purpose: OtpPurpose,
+  ) {
+    return this.authService.verifyOtp({ email, code, purpose });
+  }
+
+  @Post("resend-otp")
+  @ApiOperation({ summary: "Re-send the OTP email (max once per minute)" })
+  resendOtp(
+    @Body("email") email: string,
+    @Body("purpose") purpose: OtpPurpose,
+  ) {
+    return this.authService.resendOtp({ email, purpose });
   }
 
   @Get("auth0-config")

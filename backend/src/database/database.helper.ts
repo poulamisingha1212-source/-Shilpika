@@ -61,6 +61,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { User, UserRole } from '../users/user.entity';
 import { ArtisanProfile } from '../users/artisan-profile.entity';
 import { Product, ProductStatus } from '../products/product.entity';
+import { EmailOtp } from '../auth/email-otp.entity';
 import { MarketCategory } from '../market/market-category.entity';
 import { MarketSubcategory } from '../market/market-subcategory.entity';
 import { Order } from '../orders/order.entity';
@@ -78,6 +79,7 @@ import { AuctionBid } from '../auctions/auction-bid.entity';
 export const APP_ENTITIES = [
   User,
   ArtisanProfile,
+  EmailOtp,
   Product,
   MarketCategory,
   MarketSubcategory,
